@@ -1,0 +1,152 @@
+[
+  {
+    "number": 1,
+    "name": "الفاتحة",
+    "englishName": "Al-Fatiha",
+    "englishNameTranslation": "The Opening",
+    "numberOfAyahs": 7,
+    "revelationType": "Meccan",
+    "ayahs": [
+      {
+        "number": 1,
+        "text": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        "numberInSurah": 1,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      },
+      {
+        "number": 2,
+        "text": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        "numberInSurah": 2,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      },
+      {
+        "number": 3,
+        "text": "الرَّحْمَٰنِ الرَّحِيمِ",
+        "numberInSurah": 3,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      },
+      {
+        "number": 4,
+        "text": "مَالِكِ يَوْمِ الدِّينِ",
+        "numberInSurah": 4,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      },
+      {
+        "number": 5,
+        "text": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        "numberInSurah": 5,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      },
+      {
+        "number": 6,
+        "text": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+        "numberInSurah": 6,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      },
+      {
+        "number": 7,
+        "text": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+        "numberInSurah": 7,
+        "page": 1,
+        "surahNumber": 1,
+        "juz": 1
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "name": "البقرة",
+    "englishName": "Al-Baqara",
+    "englishNameTranslation": "The Cow",
+    "numberOfAyahs": 286,
+    "revelationType": "Medinan",
+    "ayahs": [
+      {
+        "number": 8,
+        "text": "الم",
+        "numberInSurah": 1,
+        "page": 2,
+        "surahNumber": 2,
+        "juz": 1
+      },
+      {
+        "number": 9,
+        "text": "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
+        "numberInSurah": 2,
+        "page": 2,
+        "surahNumber": 2,
+        "juz": 1
+      },
+      {
+        "number": 10,
+        "text": "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ",
+        "numberInSurah": 3,
+        "page": 2,
+        "surahNumber": 2,
+        "juz": 1
+      },
+      {
+        "number": 11,
+        "text": "وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ",
+        "numberInSurah": 4,
+        "page": 3,
+        "surahNumber": 2,
+        "juz": 1
+      },
+      {
+        "number": 12,
+        "text": "أُو۟لَـٰئِكَ عَلَىٰ هُدًۭى مِّن رَّبِّهِمْ ۖ وَأُو۟لَـٰئِكَ هُمُ ٱلْمُفْلِحُونَ",
+        "numberInSurah": 5,
+        "page": 3,
+        "surahNumber": 2,
+        "juz": 1
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "name": "آل عمران",
+    "englishName": "Aal-e-Imran",
+    "englishNameTranslation": "The Family of Imran",
+    "numberOfAyahs": 200,
+    "revelationType": "Medinan",
+    "ayahs": [
+      {
+        "number": 294,
+        "text": "الم",
+        "numberInSurah": 1,
+        "page": 50,
+        "surahNumber": 3,
+        "juz": 3
+      },
+      {
+        "number": 295,
+        "text": "ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ",
+        "numberInSurah": 2,
+        "page": 50,
+        "surahNumber": 3,
+        "juz": 3
+      },
+      {
+        "number": 296,
+        "text": "نَزَّلَ عَلَيْكَ ٱلْكِتَـٰبَ بِٱلْحَقِّ مُصَدِّقًۭا لِّمَا بَيْنَ يَدَيْهِ وَأَنزَلَ ٱلتَّوْرَىٰةَ وَٱلْإِنجِيلَ",
+        "numberInSurah": 3,
+        "page": 50,
+        "surahNumber": 3,
+        "juz": 3
+      }
+    ]
+  }
+]
