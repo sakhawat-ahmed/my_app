@@ -9,11 +9,11 @@ class AyahItem extends StatefulWidget {
   final int surahNumber;
 
   const AyahItem({
-    Key? key,
+    super.key,
     required this.arabicAyah,
     this.bengaliAyah,
     required this.surahNumber,
-  }) : super(key: key);
+  });
 
   @override
   _AyahItemState createState() => _AyahItemState();

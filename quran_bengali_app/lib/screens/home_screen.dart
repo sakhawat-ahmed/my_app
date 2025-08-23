@@ -5,7 +5,7 @@ import 'package:quran_bengali_app/services/quran_data.dart';
 import 'package:quran_bengali_app/widgets/surah_item.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();

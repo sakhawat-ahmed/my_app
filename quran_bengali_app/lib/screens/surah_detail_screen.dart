@@ -8,7 +8,7 @@ import 'package:quran_bengali_app/widgets/ayah_item.dart';
 class SurahDetailScreen extends StatefulWidget {
   final Surah surah;
 
-  const SurahDetailScreen({Key? key, required this.surah}) : super(key: key);
+  const SurahDetailScreen({super.key, required this.surah});
 
   @override
   _SurahDetailScreenState createState() => _SurahDetailScreenState();
