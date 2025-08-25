@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import 'home_screen.dart'; 
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -56,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A7E50), 
+      backgroundColor: const Color(0xFF0A7E50),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +67,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // Background circle
                     Container(
                       width: 150,
                       height: 150,
@@ -77,13 +75,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         shape: BoxShape.circle,
                       ),
                     ),
-                    // Quran icon
                     const Icon(
                       Icons.menu_book_rounded,
                       size: 80,
                       color: Colors.white,
                     ),
-                    // Islamic decorative elements
                     Positioned(
                       top: 10,
                       child: Container(
