@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("📖 Quran with Bangla Meaning"),
         centerTitle: true,
-        backgroundColor: Colors.green,
       ),
       drawer: MenuDrawer(
         selectedIndex: _selectedIndex,
