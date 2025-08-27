@@ -17,15 +17,19 @@ class SettingsScreen extends StatelessWidget {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
+        
+        // Appearance Settings
         Card(
           elevation: 2,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                leading: const Icon(Icons.text_fields),
-                title: const Text('Text Size'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {},
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Appearance',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
               ListTile(
                 leading: const Icon(Icons.nightlight_round),
@@ -37,15 +41,62 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
               ),
+            ],
+          ),
+        ),
+        
+        const SizedBox(height: 20),
+        
+        // Language Settings
+        Card(
+          elevation: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Language',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
               ListTile(
-                leading: const Icon(Icons.volume_up),
-                title: const Text('Audio Settings'),
+                leading: const Icon(Icons.language),
+                title: const Text('App Language'),
+                subtitle: Text(themeProvider.currentLanguageName),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  _showLanguageDialog(context, themeProvider);
+                },
+              ),
+            ],
+          ),
+        ),
+        
+        const SizedBox(height: 20),
+        
+        // Other Settings
+        Card(
+          elevation: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Other',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.text_fields),
+                title: const Text('Text Size'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {},
               ),
               ListTile(
-                leading: const Icon(Icons.translate),
-                title: const Text('Language'),
+                leading: const Icon(Icons.volume_up),
+                title: const Text('Audio Settings'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {},
               ),
@@ -60,7 +111,10 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
+        
         const SizedBox(height: 20),
+        
+        // App Settings
         Card(
           elevation: 2,
           child: Column(
@@ -89,6 +143,49 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  void _showLanguageDialog(BuildContext context, ThemeProvider themeProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Language'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: themeProvider.availableLanguages.length,
+            itemBuilder: (context, index) {
+              final languageCode = themeProvider.availableLanguages[index];
+              final languageName = themeProvider.languageNames[languageCode]!;
+              
+              return ListTile(
+                title: Text(languageName),
+                trailing: themeProvider.currentLanguage == languageCode
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
+                onTap: () {
+                  themeProvider.changeLanguage(languageCode);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Language changed to $languageName'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showClearCacheDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -102,7 +199,6 @@ class SettingsScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              // Clear cache logic here
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
