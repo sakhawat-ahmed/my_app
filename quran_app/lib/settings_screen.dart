@@ -41,6 +41,15 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
               ),
+              ListTile(
+                leading: const Icon(Icons.text_fields),
+                title: const Text('Text Size'),
+                subtitle: Text(themeProvider.currentTextSizeName),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  _showTextSizeDialog(context, themeProvider);
+                },
+              ),
             ],
           ),
         ),
@@ -89,12 +98,6 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.text_fields),
-                title: const Text('Text Size'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {},
-              ),
-              ListTile(
                 leading: const Icon(Icons.volume_up),
                 title: const Text('Audio Settings'),
                 trailing: const Icon(Icons.arrow_forward_ios),
@@ -139,7 +142,95 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
+
+        // Text Size Preview
+Card(
+  elevation: 2,
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Text Size Preview',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ',
+          style: TextStyle(
+            fontSize: 20 * themeProvider.textSizeFactor,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Amiri",
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+          textAlign: TextAlign.right,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'আল্লাহর নামে শুরু করছি যিনি পরম করুণাময়, অতি দয়ালু।',
+          style: TextStyle(
+            fontSize: 16 * themeProvider.textSizeFactor,
+            fontStyle: FontStyle.italic,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+        ),
       ],
+    ),
+  ),
+),
+      ],
+    );
+  }
+
+  void _showTextSizeDialog(BuildContext context, ThemeProvider themeProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Text Size'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: themeProvider.textSizeOptions.length,
+            itemBuilder: (context, index) {
+              final sizeName = themeProvider.textSizeOptions[index];
+              final sizeFactor = ThemeProvider.textSizePresets[sizeName]!;
+              
+              return ListTile(
+                title: Text(sizeName),
+                subtitle: Text(
+                  'Example: ${(16 * sizeFactor).toStringAsFixed(1)}pt',
+                  style: TextStyle(fontSize: 14 * sizeFactor),
+                ),
+                trailing: themeProvider.textSizeFactor == sizeFactor
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
+                onTap: () {
+                  themeProvider.changeTextSizeByName(sizeName);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Text size changed to $sizeName'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 

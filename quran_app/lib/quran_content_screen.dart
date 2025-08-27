@@ -5,6 +5,8 @@ class QuranContentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -17,22 +19,24 @@ class QuranContentScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    fontFamily: "Amiri", 
+                    fontFamily: "Amiri",
+                    color: theme.textTheme.bodyLarge?.color,
                   ),
                   textAlign: TextAlign.right,
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   "আল্লাহর নামে শুরু করছি যিনি পরম করুণাময়, অতি দয়ালু।",
                   style: TextStyle(
                     fontSize: 18,
                     fontStyle: FontStyle.italic,
+                    color: theme.textTheme.bodyLarge?.color, 
                   ),
                 ),
               ],
@@ -51,21 +55,23 @@ class QuranContentScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    color: theme.textTheme.bodyLarge?.color, 
                   ),
                   textAlign: TextAlign.right,
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   "সমস্ত প্রশংসা আল্লাহর যিনি সমগ্র বিশ্বের প্রতিপালক।",
                   style: TextStyle(
                     fontSize: 18,
                     fontStyle: FontStyle.italic,
+                    color: theme.textTheme.bodyLarge?.color, 
                   ),
                 ),
               ],
