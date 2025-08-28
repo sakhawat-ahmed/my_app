@@ -2,36 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app/provider/theme_provider.dart';
 
-class LanguageSettings extends StatelessWidget {
-  final ThemeProvider themeProvider;
-
-  const LanguageSettings({super.key, required this.themeProvider});
+class LanguageSelector extends StatelessWidget {
+  const LanguageSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Language',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('App Language'),
-            subtitle: Text(themeProvider.currentLanguageName),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              _showLanguageDialog(context, themeProvider);
-            },
-          ),
-        ],
-      ),
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return ListTile(
+      leading: const Icon(Icons.language),
+      title: const Text('App Language'),
+      subtitle: Text(themeProvider.currentLanguageName),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () {
+        _showLanguageDialog(context, themeProvider);
+      },
     );
   }
 

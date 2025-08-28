@@ -3,12 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:quran_app/provider/theme_provider.dart';
 
 class TextPreview extends StatelessWidget {
-  final ThemeProvider themeProvider;
-
-  const TextPreview({super.key, required this.themeProvider});
+  const TextPreview({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Card(
       elevation: 2,
       child: Padding(

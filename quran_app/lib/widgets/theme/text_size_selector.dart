@@ -2,46 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app/provider/theme_provider.dart';
 
-class AppearanceSettings extends StatelessWidget {
-  final ThemeProvider themeProvider;
-
-  const AppearanceSettings({super.key, required this.themeProvider});
+class TextSizeSelector extends StatelessWidget {
+  const TextSizeSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Appearance',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.nightlight_round),
-            title: const Text('Dark Mode'),
-            trailing: Switch(
-              value: themeProvider.isDarkMode,
-              onChanged: (value) {
-                themeProvider.toggleTheme(value);
-              },
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.text_fields),
-            title: const Text('Text Size'),
-            subtitle: Text(themeProvider.currentTextSizeName),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              _showTextSizeDialog(context, themeProvider);
-            },
-          ),
-        ],
-      ),
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return ListTile(
+      leading: const Icon(Icons.text_fields),
+      title: const Text('Text Size'),
+      subtitle: Text(themeProvider.currentTextSizeName),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () {
+        _showTextSizeDialog(context, themeProvider);
+      },
     );
   }
 
