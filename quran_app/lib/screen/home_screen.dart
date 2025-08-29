@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'menu_drawer.dart';
-import 'quran_content_screen.dart';
+import 'package:quran_app/menu_drawer.dart';
+import 'package:quran_app/quran_content_screen.dart';
 import 'bookmarks_screen.dart';
-import 'screen/settings_screen.dart';
+import 'settings_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

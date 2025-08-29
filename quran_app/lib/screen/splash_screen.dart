@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'home_screen.dart';
+import 'package:quran_app/widgets/splash/splash_logo_animation.dart';
+import 'package:quran_app/widgets/splash/splash_text_content.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,6 +21,17 @@ class SplashScreenState extends State<SplashScreen> with SingleTickerProviderSta
   void initState() {
     super.initState();
     
+    _initializeAnimations();
+    _controller.forward();
+    
+    Timer(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    });
+  }
+
+  void _initializeAnimations() {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -36,14 +49,6 @@ class SplashScreenState extends State<SplashScreen> with SingleTickerProviderSta
       begin: const Offset(0, 0.5),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    
-    _controller.forward();
-    
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    });
   }
 
   @override
@@ -60,61 +65,14 @@ class SplashScreenState extends State<SplashScreen> with SingleTickerProviderSta
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.menu_book_rounded,
-                      size: 80,
-                      color: Colors.white,
-                    ),
-                    Positioned(
-                      top: 10,
-                      child: Container(
-                        width: 120,
-                        height: 2,
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      child: Container(
-                        width: 120,
-                        height: 2,
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            SplashLogoAnimation(
+              fadeAnimation: _fadeAnimation,
+              scaleAnimation: _scaleAnimation,
             ),
             const SizedBox(height: 30),
-            SlideTransition(
-              position: _slideAnimation,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: const Text(
-                  '📖 Quran with Bangla Meaning',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            SplashTextContent(
+              fadeAnimation: _fadeAnimation,
+              slideAnimation: _slideAnimation,
             ),
             const SizedBox(height: 10),
             FadeTransition(
