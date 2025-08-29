@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/screen/about_screen.dart';
 
 class MenuDrawer extends StatelessWidget {
   final int selectedIndex;
@@ -83,20 +84,9 @@ class MenuDrawer extends StatelessWidget {
             title: const Text('About'),
             onTap: () {
               Navigator.pop(context);
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('About Quran App'),
-                  content: const Text(
-                    'Quran with Bengali Meaning\nVersion 1.0.0\n\nA beautiful app to read Quran with Bengali translation.',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
               );
             },
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screen/splash_screen.dart';
+import 'package:quran_app/screen/splash_screen.dart';
+import 'package:quran_app/screen/home_screen.dart';
+import 'package:quran_app/screen/about_screen.dart';
 import 'provider/theme_provider.dart';
 
 void main() {
@@ -21,6 +23,10 @@ class MyApp extends StatelessWidget {
             theme: themeProvider.themeData,
             home: const SplashScreen(),
             debugShowCheckedModeBanner: false,
+            routes: {
+              '/home': (context) => const HomePage(),
+              '/about': (context) => const AboutScreen(),
+            },
           );
         },
       ),
