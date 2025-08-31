@@ -4,14 +4,37 @@ import 'package:quran_app/data/bookmark_manager.dart';
 
 class SuraScreen extends StatefulWidget {
   final Surah surah;
+  final int? initialVerseIndex; // <-- new
 
-  const SuraScreen({super.key, required this.surah});
+  const SuraScreen({super.key, required this.surah, this.initialVerseIndex});
 
   @override
   State<SuraScreen> createState() => _SuraScreenState();
 }
 
 class _SuraScreenState extends State<SuraScreen> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+
+    // Scroll after first frame render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialVerseIndex != null) {
+        final position = widget.initialVerseIndex! * 150.0; // approx height of each card
+        _scrollController.jumpTo(position);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -21,14 +44,18 @@ class _SuraScreenState extends State<SuraScreen> {
         title: Text(widget.surah.name, style: const TextStyle(fontFamily: "Amiri")),
       ),
       body: ListView.builder(
+        controller: _scrollController,
         padding: const EdgeInsets.all(16),
         itemCount: widget.surah.arabicVerses.length,
         itemBuilder: (context, index) {
           final isBookmarked =
               BookmarkManager.isBookmarked(widget.surah, index);
 
+          final isHighlighted = widget.initialVerseIndex == index;
+
           return Card(
             elevation: 2,
+            color: isHighlighted ? Colors.yellow[100] : null, // highlight bookmarked verse
             margin: const EdgeInsets.only(bottom: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -38,7 +65,7 @@ class _SuraScreenState extends State<SuraScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Verse number + bookmark button
+                  // Verse number + bookmark
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -60,11 +87,9 @@ class _SuraScreenState extends State<SuraScreen> {
                         onPressed: () {
                           setState(() {
                             if (isBookmarked) {
-                              BookmarkManager.removeBookmark(
-                                  widget.surah, index);
+                              BookmarkManager.removeBookmark(widget.surah, index);
                             } else {
-                              BookmarkManager.addBookmark(
-                                  widget.surah, index);
+                              BookmarkManager.addBookmark(widget.surah, index);
                             }
                           });
 
