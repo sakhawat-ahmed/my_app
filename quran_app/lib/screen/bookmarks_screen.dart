@@ -57,7 +57,7 @@ class BookmarksScreen extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (_) => SuraScreen(
                     surah: surah,
-                    initialVerseIndex: verseIndex, // pass verse index
+                    initialVerseIndex: verseIndex, 
                   ),
                 ),
               );

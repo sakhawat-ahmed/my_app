@@ -60,9 +60,6 @@ class SettingsScreen extends StatelessWidget {
         ),
         
         const SizedBox(height: 20),
-        
-        // Text Preview
-        const TextPreview(),
       ],
     );
   }

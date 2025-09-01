@@ -4,7 +4,7 @@ import 'package:quran_app/data/bookmark_manager.dart';
 
 class SuraScreen extends StatefulWidget {
   final Surah surah;
-  final int? initialVerseIndex; // <-- new
+  final int? initialVerseIndex; 
 
   const SuraScreen({super.key, required this.surah, this.initialVerseIndex});
 
@@ -23,7 +23,7 @@ class _SuraScreenState extends State<SuraScreen> {
     // Scroll after first frame render
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialVerseIndex != null) {
-        final position = widget.initialVerseIndex! * 150.0; // approx height of each card
+        final position = widget.initialVerseIndex! * 150.0; 
         _scrollController.jumpTo(position);
       }
     });
@@ -55,7 +55,7 @@ class _SuraScreenState extends State<SuraScreen> {
 
           return Card(
             elevation: 2,
-            color: isHighlighted ? Colors.yellow[100] : null, // highlight bookmarked verse
+            color: isHighlighted ? Colors.yellow[100] : null, 
             margin: const EdgeInsets.only(bottom: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -126,7 +126,7 @@ class _SuraScreenState extends State<SuraScreen> {
                     widget.surah.banglaTranslation[index],
                     style: TextStyle(
                       fontSize: 18,
-                      fontStyle: FontStyle.italic,
+                      fontFamily: "Amiri",
                       color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
