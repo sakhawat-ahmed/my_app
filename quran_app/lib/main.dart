@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app/screen/splash_screen.dart';
 import 'package:quran_app/screen/home_screen.dart';
@@ -21,6 +22,18 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: "Quran Bengali App",
             theme: themeProvider.themeData,
+            locale: Locale(themeProvider.currentLanguage),
+            supportedLocales: const [
+              Locale('bn', ''),
+              Locale('en', ''),
+              Locale('ar', ''),
+              Locale('ur', ''),
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
             home: const SplashScreen(),
             debugShowCheckedModeBanner: false,
             routes: {

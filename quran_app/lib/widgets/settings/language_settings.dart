@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app/provider/theme_provider.dart';
+import 'package:quran_app/l10n/app_localizations.dart';
 
 class LanguageSettings extends StatelessWidget {
   final ThemeProvider themeProvider;
@@ -14,16 +15,16 @@ class LanguageSettings extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Language',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              context.l10n.language,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('App Language'),
+            title: Text(context.l10n.appLanguage),
             subtitle: Text(themeProvider.currentLanguageName),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
@@ -39,7 +40,7 @@ class LanguageSettings extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
+        title: Text(context.l10n.selectLanguage),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -55,14 +56,7 @@ class LanguageSettings extends StatelessWidget {
                     ? const Icon(Icons.check, color: Colors.green)
                     : null,
                 onTap: () {
-                  themeProvider.changeLanguage(languageCode);
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Language changed to $languageName'),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
+                  _changeLanguage(context, languageCode, languageName);
                 },
               );
             },
@@ -71,9 +65,27 @@ class LanguageSettings extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
         ],
+      ),
+    );
+  }
+
+  void _changeLanguage(BuildContext context, String languageCode, String languageName) async {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    
+    // Change the language in the provider
+    await themeProvider.changeLanguage(languageCode);
+    
+    // Close the dialog
+    Navigator.pop(context);
+    
+    // Show success message using the localized string
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.languageChanged(languageName)),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

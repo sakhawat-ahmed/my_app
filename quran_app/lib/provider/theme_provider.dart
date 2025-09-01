@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider with ChangeNotifier {
   bool _isDarkMode = false;
@@ -19,6 +20,10 @@ class ThemeProvider with ChangeNotifier {
     'Extra Large': 1.4,
   };
 
+  ThemeProvider() {
+    _loadPreferences();
+  }
+
   bool get isDarkMode => _isDarkMode;
   String get currentLanguage => _currentLanguage;
   String get currentLanguageName => _languageNames[_currentLanguage] ?? 'English';
@@ -30,26 +35,42 @@ class ThemeProvider with ChangeNotifier {
 
   ThemeData get themeData => _isDarkMode ? _darkTheme : _lightTheme;
 
-  void toggleTheme(bool value) {
-    _isDarkMode = value;
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    _currentLanguage = prefs.getString('language') ?? 'en';
+    _textSizeFactor = prefs.getDouble('textSizeFactor') ?? 1.0;
     notifyListeners();
   }
 
-  void changeLanguage(String languageCode) {
+  Future<void> toggleTheme(bool value) async {
+    _isDarkMode = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+    notifyListeners();
+  }
+
+  Future<void> changeLanguage(String languageCode) async {
     if (_languageNames.containsKey(languageCode)) {
       _currentLanguage = languageCode;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('language', languageCode);
       notifyListeners();
     }
   }
 
-  void changeTextSize(double factor) {
+  Future<void> changeTextSize(double factor) async {
     _textSizeFactor = factor;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('textSizeFactor', factor);
     notifyListeners();
   }
 
-  void changeTextSizeByName(String sizeName) {
+  Future<void> changeTextSizeByName(String sizeName) async {
     if (textSizePresets.containsKey(sizeName)) {
       _textSizeFactor = textSizePresets[sizeName]!;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('textSizeFactor', _textSizeFactor);
       notifyListeners();
     }
   }
@@ -77,14 +98,6 @@ class ThemeProvider with ChangeNotifier {
         foregroundColor: Colors.white,
       ),
       scaffoldBackgroundColor: Colors.white,
-      cardTheme: CardThemeData(
-        elevation: 2,
-        color: Colors.white,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
       textTheme: TextTheme(
         bodyLarge: TextStyle(
           fontSize: 16.0 * _textSizeFactor,
@@ -146,20 +159,6 @@ class ThemeProvider with ChangeNotifier {
         foregroundColor: Colors.white,
       ),
       scaffoldBackgroundColor: const Color(0xFF121212),
-      cardTheme: CardThemeData(
-        elevation: 4,
-        color: const Color(0xFF1E1E1E),
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      dialogTheme: DialogThemeData(
-        backgroundColor: const Color(0xFF1E1E1E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
       textTheme: TextTheme(
         bodyLarge: TextStyle(
           fontSize: 16.0 * _textSizeFactor,
