@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:quran_app/provider/theme_provider.dart';
 
 class AppearanceSettings extends StatelessWidget {

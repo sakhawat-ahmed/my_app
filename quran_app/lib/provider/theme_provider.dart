@@ -91,7 +91,7 @@ class ThemeProvider with ChangeNotifier {
       colorScheme: const ColorScheme.light(
         primary: Colors.green,
         secondary: Colors.green,
-        onBackground: Colors.black87,
+        onSurface: Colors.black87,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.green,
@@ -152,7 +152,7 @@ class ThemeProvider with ChangeNotifier {
       colorScheme: ColorScheme.dark(
         primary: Colors.green[700]!,
         secondary: Colors.greenAccent,
-        onBackground: Colors.white,
+        onSurface: Colors.white,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.green[800],

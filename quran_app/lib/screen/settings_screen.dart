@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:quran_app/provider/theme_provider.dart';
 import 'package:quran_app/widgets/theme/theme_switcher.dart';
 import 'package:quran_app/widgets/theme/text_size_selector.dart';
 import 'package:quran_app/widgets/theme/language_selector.dart';
-import 'package:quran_app/widgets/theme/text_preview.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
