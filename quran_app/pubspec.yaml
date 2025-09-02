@@ -39,6 +39,8 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.5.3
   flutter_gen_runner: ^5.11.0
+  http: ^1.5.0
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:
