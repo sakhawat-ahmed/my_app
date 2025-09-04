@@ -5,6 +5,7 @@ import 'package:quran_app/screen/splash_screen.dart';
 import 'package:quran_app/screen/home_screen.dart';
 import 'package:quran_app/screen/about_screen.dart';
 import 'provider/theme_provider.dart';
+import 'provider/quran_provider.dart'; // Add this import
 
 void main() {
   runApp(const MyApp());
@@ -15,8 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    return MultiProvider( // Change from ChangeNotifierProvider to MultiProvider
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => QuranProvider()), // Add QuranProvider
+      ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
