@@ -4,10 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:quran_app/screen/splash_screen.dart';
 import 'package:quran_app/screen/home_screen.dart';
 import 'package:quran_app/screen/about_screen.dart';
-import 'provider/theme_provider.dart';
-import 'provider/quran_provider.dart'; // Add this import
+import 'package:quran_app/provider/theme_provider.dart';
+import 'package:quran_app/provider/quran_provider.dart';
+import 'package:quran_app/data/bookmark_manager.dart';
 
-void main() {
+void main() async {
+  
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await BookmarkManager.loadBookmarks();
+  
   runApp(const MyApp());
 }
 
@@ -16,16 +22,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider( // Change from ChangeNotifierProvider to MultiProvider
+    return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        ChangeNotifierProvider(create: (context) => QuranProvider()), // Add QuranProvider
+        ChangeNotifierProvider(create: (context) => QuranProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
             title: "Quran Bengali App",
             theme: themeProvider.themeData,
+            darkTheme: themeProvider.themeData,
             locale: Locale(themeProvider.currentLanguage),
             supportedLocales: const [
               Locale('bn', ''),

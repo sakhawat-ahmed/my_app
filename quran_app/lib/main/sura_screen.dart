@@ -21,19 +21,12 @@ class _SuraScreenState extends State<SuraScreen> {
     _scrollController = ScrollController();
     surah = widget.surahData['data'];
 
-    // Scroll after first frame render
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialVerseIndex != null) {
-        final position = widget.initialVerseIndex! * 150.0;
+        final position = widget.initialVerseIndex! * 200.0; // Increased for more space
         _scrollController.jumpTo(position);
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   @override
@@ -59,7 +52,7 @@ class _SuraScreenState extends State<SuraScreen> {
           return Card(
             elevation: 2,
             color: isHighlighted ? Colors.yellow[100] : null,
-            margin: const EdgeInsets.only(bottom: 12),
+            margin: const EdgeInsets.only(bottom: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -68,37 +61,20 @@ class _SuraScreenState extends State<SuraScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Verse number + bookmark
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${verse['numberInSurah']}",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.bookmark_border),
-                        color: Colors.grey,
-                        onPressed: () {
-                          // You'll need to adapt your BookmarkManager for API data
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Bookmark functionality coming soon"),
-                              duration: Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
-                  // Arabic text
+                  // Verse number
                   Text(
-                    verse['text'],
+                    "আয়াত ${verse['numberInSurah']}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Arabic text (Original)
+                  Text(
+                    verse['arabicText'],
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 24,
@@ -107,17 +83,20 @@ class _SuraScreenState extends State<SuraScreen> {
                       color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
 
-                  // Translation (if available)
-                  if (verse.containsKey('translation'))
-                    Text(
-                      verse['translation'],
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: theme.textTheme.bodyLarge?.color,
-                      ),
+                  // Divider
+                  const Divider(),
+                  const SizedBox(height: 8),
+
+                  // Bangla Translation
+                  Text(
+                    verse['translationText'],
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: theme.textTheme.bodyLarge?.color,
                     ),
+                  ),
                 ],
               ),
             ),
@@ -125,5 +104,11 @@ class _SuraScreenState extends State<SuraScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

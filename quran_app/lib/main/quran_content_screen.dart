@@ -3,28 +3,18 @@ import 'package:provider/provider.dart';
 import 'package:quran_app/provider/quran_provider.dart';
 import 'package:quran_app/main/sura_screen.dart';
 
-class QuranContentScreen extends StatefulWidget {
-  final QuranProvider quranProvider;
-  final bool isLoading;
+class QuranContentScreen extends StatelessWidget {
+  const QuranContentScreen({super.key});
 
-  const QuranContentScreen({
-    super.key,
-    required this.quranProvider,
-    required this.isLoading,
-  });
-
-  @override
-  State<QuranContentScreen> createState() => _QuranContentScreenState();
-}
-
-class _QuranContentScreenState extends State<QuranContentScreen> {
   @override
   Widget build(BuildContext context) {
-    if (widget.isLoading) {
+    final quranProvider = Provider.of<QuranProvider>(context);
+    
+    if (quranProvider.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-
-    if (widget.quranProvider.error != null) {
+    
+    if (quranProvider.error != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -32,15 +22,14 @@ class _QuranContentScreenState extends State<QuranContentScreen> {
             const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              'Error: ${widget.quranProvider.error}',
+              'Error: ${quranProvider.error}',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Reload data
-                Provider.of<QuranProvider>(context, listen: false).loadSurahs();
+                quranProvider.loadSurahs();
               },
               child: const Text('Retry'),
             ),
@@ -48,11 +37,11 @@ class _QuranContentScreenState extends State<QuranContentScreen> {
         ),
       );
     }
-
+    
     return ListView.builder(
-      itemCount: widget.quranProvider.surahs.length,
+      itemCount: quranProvider.surahs.length,
       itemBuilder: (context, index) {
-        final surah = widget.quranProvider.surahs[index];
+        final surah = quranProvider.surahs[index];
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: ListTile(
@@ -75,8 +64,7 @@ class _QuranContentScreenState extends State<QuranContentScreen> {
               style: const TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              // Navigate to surah detail screen
-              _navigateToSurahDetail(surah['number']);
+              _navigateToSurahDetail(context, surah['number']);
             },
           ),
         );
@@ -84,48 +72,43 @@ class _QuranContentScreenState extends State<QuranContentScreen> {
     );
   }
 
-  void _navigateToSurahDetail(int surahNumber) async {
-    try {
-      // Show loading dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Loading surah...'),
-            ],
-          ),
+  void _navigateToSurahDetail(BuildContext context, int surahNumber) async {
+  final quranProvider = Provider.of<QuranProvider>(context, listen: false);
+  
+  try {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Loading surah...'),
+          ],
         ),
-      );
+      ),
+    );
 
-      // Load surah details
-      final surahData = await widget.quranProvider.getSurah(surahNumber);
-      
-      // Close loading dialog
-      Navigator.pop(context);
-      
-      // Navigate to detail screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SuraScreen(surahData: surahData),
-        ),
-      );
-    } catch (e) {
-      // Close loading dialog
-      Navigator.pop(context);
-      
-      // Show error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to load surah: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    // Use the new method that gets both Arabic and translation
+    final surahData = await quranProvider.getSurahWithArabic(surahNumber);
+    Navigator.pop(context);
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SuraScreen(surahData: surahData),
+      ),
+    );
+  } catch (e) {
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Failed to load surah: $e'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
 }

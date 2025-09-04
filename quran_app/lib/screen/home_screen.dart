@@ -15,28 +15,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  bool _isLoading = true;
 
   final List<Widget> _screens = [
     const QuranContentScreen(),
     const BookmarksScreen(),
     const SettingsScreen(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    // Load surahs when the screen initializes
-    _loadSurahs();
-  }
-
-  Future<void> _loadSurahs() async {
-    final quranProvider = Provider.of<QuranProvider>(context, listen: false);
-    await quranProvider.loadSurahs();
-    setState(() {
-      _isLoading = false;
-    });
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -46,15 +30,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final quranProvider = Provider.of<QuranProvider>(context);
-
-    // Update the QuranContentScreen to pass the provider
-    final List<Widget> updatedScreens = [
-      QuranContentScreen(quranProvider: quranProvider, isLoading: _isLoading),
-      const BookmarksScreen(),
-      const SettingsScreen(),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("📖 Quran with Bangla Meaning"),
@@ -64,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
       ),
-      body: updatedScreens[_selectedIndex],
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

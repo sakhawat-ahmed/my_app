@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app/provider/theme_provider.dart';
-import 'package:quran_app/l10n/app_localizations.dart';
 
 class LanguageSettings extends StatelessWidget {
   final ThemeProvider themeProvider;
@@ -15,16 +14,16 @@ class LanguageSettings extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
-              context.l10n.language,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Language',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.language),
-            title: Text(context.l10n.appLanguage),
+            title: const Text('App Language'),
             subtitle: Text(themeProvider.currentLanguageName),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
@@ -40,7 +39,7 @@ class LanguageSettings extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(context.l10n.selectLanguage),
+        title: const Text('Select Language'),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -65,7 +64,7 @@ class LanguageSettings extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.cancel),
+            child: const Text('Cancel'),
           ),
         ],
       ),
@@ -81,10 +80,10 @@ class LanguageSettings extends StatelessWidget {
     // Close the dialog
     Navigator.pop(context);
     
-    // Show success message using the localized string
+    // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(context.l10n.languageChanged(languageName)),
+        content: Text('Language changed to $languageName'),
         duration: const Duration(seconds: 2),
       ),
     );

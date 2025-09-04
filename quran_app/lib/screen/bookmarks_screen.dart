@@ -2,14 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/data/bookmark_manager.dart';
 import 'package:quran_app/main/sura_screen.dart';
 
-class BookmarksScreen extends StatelessWidget {
+class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final bookmarks = BookmarkManager.bookmarks;
+  State<BookmarksScreen> createState() => _BookmarksScreenState();
+}
 
-    if (bookmarks.isEmpty) {
+class _BookmarksScreenState extends State<BookmarksScreen> {
+  List<Bookmark> _bookmarks = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookmarks();
+  }
+
+  Future<void> _loadBookmarks() async {
+    await BookmarkManager.loadBookmarks();
+    setState(() {
+      _bookmarks = BookmarkManager.bookmarks;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_bookmarks.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -32,11 +56,9 @@ class BookmarksScreen extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: bookmarks.length,
+      itemCount: _bookmarks.length,
       itemBuilder: (context, index) {
-        final bookmark = bookmarks[index];
-        final surah = bookmark.surah;
-        final verseIndex = bookmark.verseIndex;
+        final bookmark = _bookmarks[index];
 
         return Card(
           elevation: 2,
@@ -44,27 +66,37 @@ class BookmarksScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: ListTile(
-            title: Text("${surah.name} - Verse ${verseIndex + 1}"),
-            subtitle: Text(
-              surah.banglaTranslation[verseIndex],
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            leading: CircleAvatar(
+              child: Text('${bookmark.surahNumber}'),
             ),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+            title: Text("${bookmark.surahEnglishName} - Verse ${bookmark.verseIndex + 1}"),
+            subtitle: Text(bookmark.surahName),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () => _removeBookmark(bookmark),
+            ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SuraScreen(
-                    surah: surah,
-                    initialVerseIndex: verseIndex, 
-                  ),
-                ),
-              );
+              // For bookmarks, we need to load the surah from API
+              // This will navigate to a loading screen first
+              _navigateToBookmark(context, bookmark);
             },
           ),
         );
       },
+    );
+  }
+
+  Future<void> _removeBookmark(Bookmark bookmark) async {
+    await BookmarkManager.removeBookmark(bookmark.surahNumber, bookmark.verseIndex);
+    await _loadBookmarks(); // Reload bookmarks
+  }
+
+  void _navigateToBookmark(BuildContext context, Bookmark bookmark) {
+    // Show a message that we need to implement API loading for bookmarks
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Loading bookmarked verses from API will be implemented soon'),
+      ),
     );
   }
 }
