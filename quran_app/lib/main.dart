@@ -9,11 +9,8 @@ import 'package:quran_app/provider/quran_provider.dart';
 import 'package:quran_app/data/bookmark_manager.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
-  
   await BookmarkManager.loadBookmarks();
-  
   runApp(const MyApp());
 }
 

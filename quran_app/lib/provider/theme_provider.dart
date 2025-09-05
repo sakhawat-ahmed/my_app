@@ -12,7 +12,6 @@ class ThemeProvider with ChangeNotifier {
     'ur': 'اردو (Urdu)',
   };
 
-  // Text size presets
   static const Map<String, double> textSizePresets = {
     'Small': 0.8,
     'Medium': 1.0,
@@ -84,14 +83,13 @@ class ThemeProvider with ChangeNotifier {
     return 'Medium';
   }
 
-  // Light theme with proper text colors
   ThemeData get _lightTheme {
     return ThemeData.light().copyWith(
       primaryColor: Colors.green,
       colorScheme: const ColorScheme.light(
         primary: Colors.green,
         secondary: Colors.green,
-        onSurface: Colors.black87,
+        onBackground: Colors.black87,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.green,
@@ -99,60 +97,26 @@ class ThemeProvider with ChangeNotifier {
       ),
       scaffoldBackgroundColor: Colors.white,
       textTheme: TextTheme(
-        bodyLarge: TextStyle(
-          fontSize: 16.0 * _textSizeFactor,
-          color: Colors.black87,
-        ),
-        bodyMedium: TextStyle(
-          fontSize: 14.0 * _textSizeFactor,
-          color: Colors.black87,
-        ),
-        bodySmall: TextStyle(
-          fontSize: 12.0 * _textSizeFactor,
-          color: Colors.black87,
-        ),
-        titleLarge: TextStyle(
-          fontSize: 22.0 * _textSizeFactor,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
-        titleMedium: TextStyle(
-          fontSize: 18.0 * _textSizeFactor,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
-        titleSmall: TextStyle(
-          fontSize: 16.0 * _textSizeFactor,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
-        displayLarge: TextStyle(
-          fontSize: 24.0 * _textSizeFactor,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
-        displayMedium: TextStyle(
-          fontSize: 20.0 * _textSizeFactor,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
-        displaySmall: TextStyle(
-          fontSize: 18.0 * _textSizeFactor,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
+        bodyLarge: TextStyle(fontSize: 16.0 * _textSizeFactor, color: Colors.black87),
+        bodyMedium: TextStyle(fontSize: 14.0 * _textSizeFactor, color: Colors.black87),
+        bodySmall: TextStyle(fontSize: 12.0 * _textSizeFactor, color: Colors.black87),
+        titleLarge: TextStyle(fontSize: 22.0 * _textSizeFactor, color: Colors.black87, fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(fontSize: 18.0 * _textSizeFactor, color: Colors.black87, fontWeight: FontWeight.bold),
+        titleSmall: TextStyle(fontSize: 16.0 * _textSizeFactor, color: Colors.black87, fontWeight: FontWeight.bold),
+        displayLarge: TextStyle(fontSize: 24.0 * _textSizeFactor, color: Colors.black87, fontWeight: FontWeight.bold),
+        displayMedium: TextStyle(fontSize: 20.0 * _textSizeFactor, color: Colors.black87, fontWeight: FontWeight.bold),
+        displaySmall: TextStyle(fontSize: 18.0 * _textSizeFactor, color: Colors.black87, fontWeight: FontWeight.bold),
       ),
     );
   }
 
-  // Dark theme
   ThemeData get _darkTheme {
     return ThemeData.dark().copyWith(
       primaryColor: Colors.green[700],
       colorScheme: ColorScheme.dark(
         primary: Colors.green[700]!,
         secondary: Colors.greenAccent,
-        onSurface: Colors.white,
+        onBackground: Colors.white,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.green[800],
@@ -160,48 +124,15 @@ class ThemeProvider with ChangeNotifier {
       ),
       scaffoldBackgroundColor: const Color(0xFF121212),
       textTheme: TextTheme(
-        bodyLarge: TextStyle(
-          fontSize: 16.0 * _textSizeFactor,
-          color: Colors.white,
-        ),
-        bodyMedium: TextStyle(
-          fontSize: 14.0 * _textSizeFactor,
-          color: Colors.white,
-        ),
-        bodySmall: TextStyle(
-          fontSize: 12.0 * _textSizeFactor,
-          color: Colors.white70,
-        ),
-        titleLarge: TextStyle(
-          fontSize: 22.0 * _textSizeFactor,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        titleMedium: TextStyle(
-          fontSize: 18.0 * _textSizeFactor,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        titleSmall: TextStyle(
-          fontSize: 16.0 * _textSizeFactor,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        displayLarge: TextStyle(
-          fontSize: 24.0 * _textSizeFactor,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        displayMedium: TextStyle(
-          fontSize: 20.0 * _textSizeFactor,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        displaySmall: TextStyle(
-          fontSize: 18.0 * _textSizeFactor,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+        bodyLarge: TextStyle(fontSize: 16.0 * _textSizeFactor, color: Colors.white),
+        bodyMedium: TextStyle(fontSize: 14.0 * _textSizeFactor, color: Colors.white),
+        bodySmall: TextStyle(fontSize: 12.0 * _textSizeFactor, color: Colors.white70),
+        titleLarge: TextStyle(fontSize: 22.0 * _textSizeFactor, color: Colors.white, fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(fontSize: 18.0 * _textSizeFactor, color: Colors.white, fontWeight: FontWeight.bold),
+        titleSmall: TextStyle(fontSize: 16.0 * _textSizeFactor, color: Colors.white, fontWeight: FontWeight.bold),
+        displayLarge: TextStyle(fontSize: 24.0 * _textSizeFactor, color: Colors.white, fontWeight: FontWeight.bold),
+        displayMedium: TextStyle(fontSize: 20.0 * _textSizeFactor, color: Colors.white, fontWeight: FontWeight.bold),
+        displaySmall: TextStyle(fontSize: 18.0 * _textSizeFactor, color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }

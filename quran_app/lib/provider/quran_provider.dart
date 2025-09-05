@@ -17,7 +17,7 @@ class QuranProvider with ChangeNotifier {
 
   final Map<String, String> translationEditions = {
     'bn': 'bn.bengali',
-    'en': 'en.english', 
+    'en': 'en.english',
     'ar': 'ar.original',
     'ur': 'ur.urdu',
   };
@@ -55,72 +55,39 @@ class QuranProvider with ChangeNotifier {
     }
   }
 
-  // NEW: Get surah with both Arabic and translation
-  Future<Map<String, dynamic>> getSurahWithArabic(int surahNumber, {String? language}) async {
+  Future<Map<String, dynamic>> getSurah(int surahNumber) async {
     try {
-      final lang = language ?? _currentLanguage;
-      final edition = translationEditions[lang] ?? 'bn.bengali';
-      
-      // Get Arabic text
-      final arabicResponse = await http.get(
-        Uri.parse('https://api.alquran.cloud/v1/surah/$surahNumber/ar.original')
+      final response = await http.get(
+        Uri.parse('https://api.alquran.cloud/v1/surah/$surahNumber')
       );
       
-      // Get translation
-      final translationResponse = await http.get(
-        Uri.parse('https://api.alquran.cloud/v1/surah/$surahNumber/$edition')
-      );
-      
-      if (arabicResponse.statusCode == 200 && translationResponse.statusCode == 200) {
-        final arabicData = json.decode(arabicResponse.body);
-        final translationData = json.decode(translationResponse.body);
-        
-        // Combine Arabic text with translation
-        final combinedData = _combineArabicWithTranslation(arabicData, translationData);
-        return combinedData;
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
       } else {
-        throw Exception('Failed to load surah data');
+        throw Exception('Failed to load surah: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to load surah: $e');
     }
   }
 
-  // Helper method to combine Arabic text with translation
-  Map<String, dynamic> _combineArabicWithTranslation(
-    Map<String, dynamic> arabicData, 
-    Map<String, dynamic> translationData
-  ) {
-    final arabicSurah = arabicData['data'];
-    final translationSurah = translationData['data'];
-    
-    final combinedAyahs = [];
-    
-    for (int i = 0; i < arabicSurah['ayahs'].length; i++) {
-      final arabicAyah = arabicSurah['ayahs'][i];
-      final translationAyah = translationSurah['ayahs'][i];
+  Future<Map<String, dynamic>> getSurahWithTranslation(int surahNumber, {String? language}) async {
+    try {
+      final lang = language ?? _currentLanguage;
+      final edition = translationEditions[lang] ?? 'bn.bengali';
       
-      combinedAyahs.add({
-        'number': arabicAyah['number'],
-        'numberInSurah': arabicAyah['numberInSurah'],
-        'arabicText': arabicAyah['text'],
-        'translationText': translationAyah['text'],
-        'juz': arabicAyah['juz'],
-        'page': arabicAyah['page'],
-      });
-    }
-    
-    return {
-      'data': {
-        'number': arabicSurah['number'],
-        'name': arabicSurah['name'],
-        'englishName': arabicSurah['englishName'],
-        'englishNameTranslation': arabicSurah['englishNameTranslation'],
-        'numberOfAyahs': arabicSurah['numberOfAyahs'],
-        'revelationType': arabicSurah['revelationType'],
-        'ayahs': combinedAyahs,
+      final response = await http.get(
+        Uri.parse('https://api.alquran.cloud/v1/surah/$surahNumber/$edition')
+      );
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load surah: ${response.statusCode}');
       }
-    };
+    } catch (e) {
+      throw Exception('Failed to load surah: $e');
+    }
   }
 
   Future<void> changeLanguage(String languageCode) async {
