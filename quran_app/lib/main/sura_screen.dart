@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/data/bookmark_manager.dart';
 
 class SuraScreen extends StatefulWidget {
   final Map<String, dynamic> surahData;
@@ -23,7 +22,7 @@ class _SuraScreenState extends State<SuraScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialVerseIndex != null) {
-        final position = widget.initialVerseIndex! * 200.0; // Increased for more space
+        final position = widget.initialVerseIndex! * 200.0;
         _scrollController.jumpTo(position);
       }
     });
@@ -36,10 +35,7 @@ class _SuraScreenState extends State<SuraScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '${surah['englishName']} (${surah['name']})',
-          style: const TextStyle(fontFamily: "Amiri"),
-        ),
+        title: Text('${surah['englishName']} (${surah['name']})', style: const TextStyle(fontFamily: "Amiri")),
       ),
       body: ListView.builder(
         controller: _scrollController,
@@ -53,49 +49,25 @@ class _SuraScreenState extends State<SuraScreen> {
             elevation: 2,
             color: isHighlighted ? Colors.yellow[100] : null,
             margin: const EdgeInsets.only(bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Verse number
-                  Text(
-                    "আয়াত ${verse['numberInSurah']}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
+                  Text("আয়াত ${verse['numberInSurah']}", style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold, color: theme.colorScheme.primary,
+                  )),
                   const SizedBox(height: 16),
-
-                  // Arabic text (Original)
-                  Text(
-                    verse['arabicText'],
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Amiri",
-                      color: theme.textTheme.bodyLarge?.color,
-                    ),
-                  ),
+                  Text(verse['text'], textAlign: TextAlign.right, style: TextStyle(
+                    fontSize: 24, fontWeight: FontWeight.bold, fontFamily: "Amiri",
+                    color: theme.textTheme.bodyLarge?.color,
+                  )),
                   const SizedBox(height: 16),
-
-                  // Divider
                   const Divider(),
                   const SizedBox(height: 8),
-
-                  // Bangla Translation
-                  Text(
-                    verse['translationText'],
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: theme.textTheme.bodyLarge?.color,
-                    ),
+                  Text(verse.containsKey('translation') ? verse['translation'] : 'অনুবাদ লোড হচ্ছে...', 
+                    style: TextStyle(fontSize: 18, color: theme.textTheme.bodyLarge?.color),
                   ),
                 ],
               ),

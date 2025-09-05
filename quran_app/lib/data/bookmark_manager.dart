@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'dart:convert'; 
 
 class Bookmark {
   final int surahNumber;
@@ -47,7 +47,7 @@ class BookmarkManager {
     final bookmarksJson = prefs.getStringList('bookmarks') ?? [];
     
     _bookmarks = bookmarksJson.map((jsonString) {
-      final map = json.decode(jsonString);
+      final map = json.decode(jsonString); // Use json.decode here
       return Bookmark.fromMap(map);
     }).toList();
   }

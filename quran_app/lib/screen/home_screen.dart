@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:quran_app/menu/menu_drawer.dart';
 import 'package:quran_app/main/quran_content_screen.dart';
 import 'package:quran_app/screen/bookmarks_screen.dart';
 import 'package:quran_app/screen/settings_screen.dart';
-import 'package:quran_app/provider/quran_provider.dart'; 
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,18 +40,9 @@ class _HomePageState extends State<HomePage> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Bookmarks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Bookmarks'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.green,

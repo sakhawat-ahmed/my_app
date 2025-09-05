@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/data/bookmark_manager.dart';
-import 'package:quran_app/main/sura_screen.dart';
 
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
@@ -59,7 +58,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
       itemCount: _bookmarks.length,
       itemBuilder: (context, index) {
         final bookmark = _bookmarks[index];
-
         return Card(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -76,9 +74,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
               onPressed: () => _removeBookmark(bookmark),
             ),
             onTap: () {
-              // For bookmarks, we need to load the surah from API
-              // This will navigate to a loading screen first
-              _navigateToBookmark(context, bookmark);
+              // Handle bookmark tap
+              _showBookmarkInfo(context, bookmark);
             },
           ),
         );
@@ -88,14 +85,29 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
 
   Future<void> _removeBookmark(Bookmark bookmark) async {
     await BookmarkManager.removeBookmark(bookmark.surahNumber, bookmark.verseIndex);
-    await _loadBookmarks(); // Reload bookmarks
+    await _loadBookmarks(); // Reload the bookmarks
   }
 
-  void _navigateToBookmark(BuildContext context, Bookmark bookmark) {
-    // Show a message that we need to implement API loading for bookmarks
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Loading bookmarked verses from API will be implemented soon'),
+  void _showBookmarkInfo(BuildContext context, Bookmark bookmark) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Bookmark Info'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Surah: ${bookmark.surahEnglishName} (${bookmark.surahName})'),
+            Text('Verse: ${bookmark.verseIndex + 1}'),
+            Text('Added: ${bookmark.timestamp.toString().split(' ')[0]}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }
