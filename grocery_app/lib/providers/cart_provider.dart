@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../models/cart_item.dart';
-import '../models/product.dart';
+import 'package:grocery_app/models/cart_item.dart';
+import 'package:grocery_app/models/product.dart';
 
 class CartProvider with ChangeNotifier {
   final List<CartItem> _items = [];

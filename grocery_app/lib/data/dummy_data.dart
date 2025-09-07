@@ -1,0 +1,82 @@
+import 'package:grocery_app/models/product.dart';
+
+class DummyData {
+  static final List<Product> products = [
+    Product(
+      id: 1,
+      name: 'Organic Bananas',
+      description: 'Fresh organic bananas from Ecuador',
+      price: 2.99,
+      imageUrl: 'assets/images/banana.png',
+      category: 'Fruits',
+      rating: 4.5,
+      reviewCount: 128,
+      unit: 'bunch',
+    ),
+    Product(
+      id: 2,
+      name: 'Red Apples',
+      description: 'Sweet and crunchy red apples',
+      price: 3.49,
+      imageUrl: 'assets/images/apple.png',
+      category: 'Fruits',
+      rating: 4.3,
+      reviewCount: 95,
+      unit: 'kg',
+    ),
+    Product(
+      id: 3,
+      name: 'Fresh Milk',
+      description: 'Organic whole milk',
+      price: 4.99,
+      imageUrl: 'assets/images/milk.png',
+      category: 'Dairy',
+      rating: 4.7,
+      reviewCount: 203,
+      unit: 'liter',
+    ),
+    Product(
+      id: 4,
+      name: 'Whole Wheat Bread',
+      description: 'Freshly baked whole wheat bread',
+      price: 2.49,
+      imageUrl: 'assets/images/bread.png',
+      category: 'Bakery',
+      rating: 4.2,
+      reviewCount: 87,
+      unit: 'loaf',
+    ),
+    Product(
+      id: 5,
+      name: 'Organic Eggs',
+      description: 'Farm fresh organic eggs',
+      price: 5.99,
+      imageUrl: 'assets/images/eggs.png',
+      category: 'Dairy',
+      rating: 4.6,
+      reviewCount: 156,
+      unit: 'dozen',
+    ),
+    Product(
+      id: 6,
+      name: 'Avocado',
+      description: 'Fresh Hass avocados',
+      price: 1.99,
+      imageUrl: 'assets/images/avocado.png',
+      category: 'Vegetables',
+      rating: 4.4,
+      reviewCount: 112,
+      unit: 'piece',
+    ),
+  ];
+
+  static List<String> categories = [
+    'All',
+    'Fruits',
+    'Vegetables',
+    'Dairy',
+    'Bakery',
+    'Meat',
+    'Beverages',
+  ];
+}
