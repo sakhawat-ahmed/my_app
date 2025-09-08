@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:grocery_app/widgets/category_list.dart';
 import 'package:grocery_app/widgets/product_grid.dart';
 import 'package:grocery_app/widgets/search_bar.dart';

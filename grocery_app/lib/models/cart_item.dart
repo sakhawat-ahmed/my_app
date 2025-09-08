@@ -1,3 +1,5 @@
+import 'package:grocery_app/models/product.dart';
+
 class CartItem {
   final Product product;
   int quantity;
