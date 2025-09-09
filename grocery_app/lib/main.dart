@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/screens/home_screen.dart';
+import 'package:grocery_app/screens/splash_screen.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,11 @@ class MyApp extends StatelessWidget {
             elevation: 0,
             iconTheme: IconThemeData(color: Colors.black),
           ),
+          // Add splash color to theme
+          splashColor: Colors.green[100],
+          highlightColor: Colors.green[50],
         ),
-        home: const HomeScreen(),
+        home: const SplashScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

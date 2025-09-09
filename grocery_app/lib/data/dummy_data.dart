@@ -18,7 +18,7 @@ class DummyData {
       name: 'Red Apples',
       description: 'Sweet and crunchy red apples',
       price: 3.49,
-      imageUrl: 'assets/images/apple.png',
+      imageUrl: 'assets/images/apple.jpg',
       category: 'Fruits',
       rating: 4.3,
       reviewCount: 95,
@@ -48,7 +48,7 @@ class DummyData {
     ),
     Product(
       id: 5,
-      name: 'Organic Eggs',
+      name: 'Eggs',
       description: 'Farm fresh organic eggs',
       price: 5.99,
       imageUrl: 'assets/images/eggs.png',
@@ -59,7 +59,7 @@ class DummyData {
     ),
     Product(
       id: 6,
-      name: 'Avocado',
+      name: 'Organic Avocado',
       description: 'Fresh Hass avocados',
       price: 1.99,
       imageUrl: 'assets/images/avocado.png',
