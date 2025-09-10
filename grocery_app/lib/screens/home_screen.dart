@@ -3,6 +3,7 @@ import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/widgets/category_list.dart';
 import 'package:grocery_app/widgets/product_grid.dart';
 import 'package:grocery_app/widgets/search_bar.dart';
+import 'package:grocery_app/utils/responsive_utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,30 +17,44 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+    final padding = ResponsiveUtils.responsivePadding(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Grocery Store',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
+            fontSize: ResponsiveUtils.titleFontSize(context),
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () { 
+            icon: Icon(
+              Icons.shopping_cart,
+              size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
+            ),
+            onPressed: () {
               const CartScreen();
-             
             },
           ),
+          if (!isMobile)
+            IconButton(
+              icon: Icon(
+                Icons.account_circle,
+                size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
+              ),
+              onPressed: () {},
+            ),
         ],
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: SearchBar(),
+          Padding(
+            padding: padding,
+            child: const SearchBar(),
           ),
           CategoryList(
             selectedCategory: selectedCategory,
