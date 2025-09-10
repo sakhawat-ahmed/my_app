@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/data/dummy_data.dart';
+import 'package:grocery_app/data/product_data.dart';
 import 'package:grocery_app/widgets/product_card.dart';
 
 class ProductGrid extends StatelessWidget {
@@ -10,8 +10,8 @@ class ProductGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filteredProducts = category == 'All'
-        ? DummyData.products
-        : DummyData.products.where((product) => product.category == category).toList();
+        ? ProductData.products
+        : ProductData.products.where((product) => product.category == category).toList();
 
     return GridView.builder(
       padding: const EdgeInsets.all(16.0),

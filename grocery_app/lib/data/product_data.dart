@@ -1,6 +1,6 @@
 import 'package:grocery_app/models/product.dart';
 
-class DummyData {
+class ProductData {
   static final List<Product> products = [
     Product(
       id: 1,

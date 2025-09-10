@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/data/dummy_data.dart';
+import 'package:grocery_app/data/product_data.dart';
 
 class CategoryList extends StatelessWidget {
   final String selectedCategory;
@@ -17,9 +17,9 @@ class CategoryList extends StatelessWidget {
       height: 60,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: DummyData.categories.length,
+        itemCount: ProductData.categories.length,
         itemBuilder: (context, index) {
-          final category = DummyData.categories[index];
+          final category = ProductData.categories[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ChoiceChip(

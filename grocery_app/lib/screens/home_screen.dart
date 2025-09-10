@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/widgets/category_list.dart';
 import 'package:grocery_app/widgets/product_grid.dart';
 import 'package:grocery_app/widgets/search_bar.dart';
@@ -27,8 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Navigate to cart screen
+            onPressed: () { 
+              const CartScreen();
+             
             },
           ),
         ],
