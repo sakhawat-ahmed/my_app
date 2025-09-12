@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/cart_provider.dart';
-import '../widgets/cart_item_widget.dart';
-import '../utils/responsive_utils.dart';
+import 'package:grocery_app/providers/cart_provider.dart';
+import 'package:grocery_app/widgets/cart_item_widget.dart';
+import 'package:grocery_app/utils/responsive_utils.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -40,15 +40,30 @@ class CartScreen extends StatelessWidget {
                             color: Colors.grey[600],
                           ),
                         ),
+                        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Continue Shopping',
+                            style: TextStyle(
+                              fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )
-                : ListView.builder(
-                    itemCount: cartProvider.items.length,
-                    itemBuilder: (context, index) {
-                      final item = cartProvider.items[index];
-                      return CartItemWidget(item: item);
-                    },
+                : SingleChildScrollView( // Added SingleChildScrollView
+                    child: Column(
+                      children: [
+                        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
+                        ...cartProvider.items.map((item) => CartItemWidget(item: item)).toList(),
+                        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
+                      ],
+                    ),
                   ),
           ),
           if (cartProvider.items.isNotEmpty)

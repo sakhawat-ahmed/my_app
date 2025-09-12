@@ -17,24 +17,17 @@ class ProductGrid extends StatelessWidget {
     final crossAxisCount = ResponsiveUtils.gridCrossAxisCount(context);
     final spacing = ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Calculate childAspectRatio based on available height
-        final aspectRatio = constraints.maxHeight > 600 ? 0.65 : 0.7;
-
-        return GridView.builder(
-          padding: EdgeInsets.all(spacing),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: spacing,
-            mainAxisSpacing: spacing,
-            childAspectRatio: aspectRatio,
-          ),
-          itemCount: filteredProducts.length,
-          itemBuilder: (context, index) {
-            return ProductCard(product: filteredProducts[index]);
-          },
-        );
+    return GridView.builder(
+      padding: EdgeInsets.all(spacing),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
+        childAspectRatio: 0.75, 
+      ),
+      itemCount: filteredProducts.length,
+      itemBuilder: (context, index) {
+        return ProductCard(product: filteredProducts[index]);
       },
     );
   }

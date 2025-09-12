@@ -11,7 +11,7 @@ class ResponsiveUtils {
   static bool isDesktop(BuildContext context) => screenWidth(context) >= 1200;
 
   // Responsive sizing
-  static double responsiveSize(BuildContext context, {double mobile = 16, double tablet = 18, double desktop = 20}) {
+  static double responsiveSize(BuildContext context, {double mobile = 12, double tablet = 14, double desktop = 16}) {
     if (isMobile(context)) return mobile;
     if (isTablet(context)) return tablet;
     return desktop;
@@ -19,9 +19,9 @@ class ResponsiveUtils {
 
   // Responsive padding
   static EdgeInsets responsivePadding(BuildContext context) {
-    if (isMobile(context)) return const EdgeInsets.all(16.0);
-    if (isTablet(context)) return const EdgeInsets.all(24.0);
-    return const EdgeInsets.all(32.0);
+    if (isMobile(context)) return const EdgeInsets.all(12.0);
+    if (isTablet(context)) return const EdgeInsets.all(16.0);
+    return const EdgeInsets.all(20.0);
   }
 
   // Grid layout columns
@@ -33,21 +33,21 @@ class ResponsiveUtils {
 
   // Image sizes
   static double productImageSize(BuildContext context) {
-    if (isMobile(context)) return 120;
-    if (isTablet(context)) return 150;
-    return 180;
+    if (isMobile(context)) return 100;
+    if (isTablet(context)) return 120;
+    return 140;
   }
 
   // Font sizes
   static double titleFontSize(BuildContext context) {
-    if (isMobile(context)) return 18;
-    if (isTablet(context)) return 22;
-    return 26;
-  }
-
-  static double priceFontSize(BuildContext context) {
     if (isMobile(context)) return 16;
     if (isTablet(context)) return 18;
     return 20;
+  }
+
+  static double priceFontSize(BuildContext context) {
+    if (isMobile(context)) return 14;
+    if (isTablet(context)) return 16;
+    return 18;
   }
 }
