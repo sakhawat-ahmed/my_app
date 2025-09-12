@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/widgets/category_list.dart';
 import 'package:grocery_app/widgets/product_grid.dart';
 import 'package:grocery_app/widgets/search_bar.dart';
@@ -37,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
               size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
             ),
             onPressed: () {
-              const CartScreen();
+              // Navigate to cart screen
             },
           ),
           if (!isMobile)
@@ -50,24 +49,26 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: padding,
-            child: const SearchBar(),
-          ),
-          CategoryList(
-            selectedCategory: selectedCategory,
-            onCategorySelected: (category) {
-              setState(() {
-                selectedCategory = category;
-              });
-            },
-          ),
-          Expanded(
-            child: ProductGrid(category: selectedCategory),
-          ),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: padding,
+              child: const SearchBar(),
+            ),
+            CategoryList(
+              selectedCategory: selectedCategory,
+              onCategorySelected: (category) {
+                setState(() {
+                  selectedCategory = category;
+                });
+              },
+            ),
+            Expanded(
+              child: ProductGrid(category: selectedCategory),
+            ),
+          ],
+        ),
       ),
     );
   }
