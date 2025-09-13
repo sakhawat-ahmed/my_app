@@ -6,6 +6,7 @@ import 'package:grocery_app/widgets/product_grid.dart';
 import 'package:grocery_app/widgets/search_bar.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:grocery_app/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -278,7 +279,12 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(builder: (context) => const CartScreen()),
             );
-          }
+          }else if (index == 4) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfileScreen()),
+    );
+  }
           // Handle other tab clicks
         },
       ),

@@ -4,6 +4,7 @@ import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/screens/splash_screen.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:grocery_app/screens/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/home': (context) => const HomeScreen(),
           '/cart': (context) => const CartScreen(),
+          '/profile': (context) => const ProfileScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),
