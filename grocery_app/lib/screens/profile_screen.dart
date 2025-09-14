@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
+import 'package:grocery_app/widgets/profile/profile_header.dart';
+import 'package:grocery_app/widgets/profile/personal_info_form.dart';
+import 'package:grocery_app/widgets/profile/preferences_section.dart';
+import 'package:grocery_app/widgets/profile/account_actions.dart';
+import 'package:grocery_app/widgets/profile/save_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -29,7 +34,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = ResponsiveUtils.isMobile(context);
     final padding = ResponsiveUtils.responsivePadding(context);
 
     return Scaffold(
@@ -73,96 +77,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             // Profile Header
-            _buildProfileHeader(),
+            ProfileHeader(isEditing: _isEditing),
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 32, desktop: 40)),
 
             // Personal Information
             _buildSectionTitle('Personal Information'),
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-            _buildPersonalInfoForm(),
+            PersonalInfoForm(
+              isEditing: _isEditing,
+              nameController: _nameController,
+              emailController: _emailController,
+              phoneController: _phoneController,
+              addressController: _addressController,
+            ),
 
             // Preferences
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 40, desktop: 48)),
             _buildSectionTitle('Preferences'),
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-            _buildPreferences(),
+            PreferencesSection(
+              notificationsEnabled: _notificationsEnabled,
+              darkModeEnabled: _darkModeEnabled,
+              onNotificationsChanged: (value) {
+                setState(() {
+                  _notificationsEnabled = value;
+                });
+              },
+              onDarkModeChanged: (value) {
+                setState(() {
+                  _darkModeEnabled = value;
+                });
+              },
+              onLanguageTap: _handleLanguageTap,
+            ),
 
             // Account Actions
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 40, desktop: 48)),
             _buildSectionTitle('Account'),
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-            _buildAccountActions(),
+            AccountActions(
+              onOrderHistoryTap: _handleOrderHistoryTap,
+              onPaymentMethodsTap: _handlePaymentMethodsTap,
+              onHelpSupportTap: _handleHelpSupportTap,
+              onLogoutTap: _showLogoutDialog,
+            ),
 
             // Save Button when editing
             if (_isEditing) ...[
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 40, desktop: 48)),
-              _buildSaveButton(),
+              SaveButton(
+                onPressed: () {
+                  setState(() {
+                    _isEditing = false;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Profile updated successfully'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+              ),
             ],
 
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildProfileHeader() {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            Container(
-              width: ResponsiveUtils.responsiveSize(context, mobile: 100, tablet: 120, desktop: 140),
-              height: ResponsiveUtils.responsiveSize(context, mobile: 100, tablet: 120, desktop: 140),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.green[100],
-                border: Border.all(
-                  color: Colors.green,
-                  width: 3,
-                ),
-              ),
-              child: Icon(
-                Icons.person,
-                size: ResponsiveUtils.responsiveSize(context, mobile: 50, tablet: 60, desktop: 70),
-                color: Colors.green,
-              ),
-            ),
-            if (_isEditing)
-              Container(
-                width: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 36, desktop: 40),
-                height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 36, desktop: 40),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.green,
-                ),
-                child: Icon(
-                  Icons.camera_alt,
-                  size: ResponsiveUtils.responsiveSize(context, mobile: 18, tablet: 20, desktop: 22),
-                  color: Colors.white,
-                ),
-              ),
-          ],
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        Text(
-          'John Doe',
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 24, desktop: 28),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 4, tablet: 6, desktop: 8)),
-        Text(
-          'Premium Member',
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-            color: Colors.green,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
     );
   }
 
@@ -180,281 +161,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildPersonalInfoForm() {
-    return Column(
-      children: [
-        _buildEditableField(
-          label: 'Full Name',
-          controller: _nameController,
-          icon: Icons.person,
-          enabled: _isEditing,
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        _buildEditableField(
-          label: 'Email Address',
-          controller: _emailController,
-          icon: Icons.email,
-          enabled: _isEditing,
-          keyboardType: TextInputType.emailAddress,
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        _buildEditableField(
-          label: 'Phone Number',
-          controller: _phoneController,
-          icon: Icons.phone,
-          enabled: _isEditing,
-          keyboardType: TextInputType.phone,
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        _buildEditableField(
-          label: 'Delivery Address',
-          controller: _addressController,
-          icon: Icons.location_on,
-          enabled: _isEditing,
-          maxLines: 2,
-        ),
-      ],
-    );
+  void _handleLanguageTap() {
+    // Language selection logic
+    print('Language tap');
   }
 
-  Widget _buildEditableField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-    bool enabled = false,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-  }) {
-    return TextFormField(
-      controller: controller,
-      enabled: enabled,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.green),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        filled: !enabled,
-        fillColor: enabled ? Colors.transparent : Colors.grey[100],
-      ),
-    );
+  void _handleOrderHistoryTap() {
+    // Navigate to order history
+    print('Order history tap');
   }
 
-  Widget _buildPreferences() {
-    return Column(
-      children: [
-        _buildSwitchTile(
-          title: 'Push Notifications',
-          subtitle: 'Receive order updates and promotions',
-          value: _notificationsEnabled,
-          onChanged: (value) {
-            setState(() {
-              _notificationsEnabled = value;
-            });
-          },
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        _buildSwitchTile(
-          title: 'Dark Mode',
-          subtitle: 'Switch to dark theme',
-          value: _darkModeEnabled,
-          onChanged: (value) {
-            setState(() {
-              _darkModeEnabled = value;
-            });
-          },
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        _buildListTile(
-          title: 'Language',
-          subtitle: 'English',
-          icon: Icons.language,
-          onTap: () {
-            // Language selection
-          },
-        ),
-      ],
-    );
+  void _handlePaymentMethodsTap() {
+    // Navigate to payment methods
+    print('Payment methods tap');
   }
 
-  Widget _buildSwitchTile({
-    required String title,
-    required String subtitle,
-    required bool value,
-    required Function(bool) onChanged,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: SwitchListTile(
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-            color: Colors.grey[600],
-          ),
-        ),
-        value: value,
-        onChanged: onChanged,
-        activeColor: Colors.green,
-      ),
-    );
-  }
-
-  Widget _buildListTile({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Function() onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.green),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-            color: Colors.grey[600],
-          ),
-        ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: Colors.grey[400],
-          size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-        ),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  Widget _buildAccountActions() {
-    return Column(
-      children: [
-        _buildActionTile(
-          title: 'Order History',
-          icon: Icons.history,
-          onTap: () {
-            // Navigate to order history
-          },
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 16, desktop: 20)),
-        _buildActionTile(
-          title: 'Payment Methods',
-          icon: Icons.credit_card,
-          onTap: () {
-            // Navigate to payment methods
-          },
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 16, desktop: 20)),
-        _buildActionTile(
-          title: 'Help & Support',
-          icon: Icons.help_center,
-          onTap: () {
-            // Navigate to help center
-          },
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 16, desktop: 20)),
-        _buildActionTile(
-          title: 'Logout',
-          icon: Icons.logout,
-          color: Colors.red,
-          onTap: () {
-            _showLogoutDialog();
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionTile({
-    required String title,
-    required IconData icon,
-    Color color = Colors.green,
-    required Function() onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-            fontWeight: FontWeight.w500,
-            color: color,
-          ),
-        ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: color,
-          size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-        ),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          setState(() {
-            _isEditing = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile updated successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-          padding: EdgeInsets.symmetric(
-            vertical: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Text(
-          'Save Changes',
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+  void _handleHelpSupportTap() {
+    // Navigate to help center
+    print('Help & support tap');
   }
 
   void _showLogoutDialog() {
