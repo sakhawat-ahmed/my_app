@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/screens/home_screen.dart';
-import 'package:grocery_app/screens/cart_screen.dart';
+import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/screens/splash_screen.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:grocery_app/screens/profile_screen.dart';
+import 'package:grocery_app/services/auth_services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,11 +32,23 @@ class MyApp extends StatelessWidget {
           splashColor: Colors.green[100],
           highlightColor: Colors.green[50],
         ),
-        home: const SplashScreen(),
+        home: FutureBuilder(
+          future: AuthService.getCurrentUser(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const SplashScreen();
+            } else {
+              if (snapshot.hasData && snapshot.data != null) {
+                return const HomeScreen();
+              } else {
+                return const LoginScreen();
+              }
+            }
+          },
+        ),
         routes: {
           '/home': (context) => const HomeScreen(),
-          '/cart': (context) => const CartScreen(),
-          '/profile': (context) => const ProfileScreen(),
+          '/login': (context) => const LoginScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),

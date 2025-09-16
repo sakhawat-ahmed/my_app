@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import '../utils/responsive_utils.dart';
+import 'package:grocery_app/utils/responsive_utils.dart';
 
 class SearchBar extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode? focusNode;
 
-  const SearchBar({super.key, required this.controller});
+  const SearchBar({super.key, required this.controller, this.focusNode});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       decoration: InputDecoration(
         hintText: 'Search for products...',
         prefixIcon: Icon(

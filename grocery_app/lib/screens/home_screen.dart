@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:grocery_app/providers/cart_provider.dart';
+import 'package:grocery_app/models/user_model.dart';
+import 'package:provider/provider.dart';
 import 'package:grocery_app/screens/cart_screen.dart';
+import 'package:grocery_app/screens/profile_screen.dart';
+import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/widgets/category_list.dart';
 import 'package:grocery_app/widgets/product_grid.dart';
 import 'package:grocery_app/widgets/search_bar.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
-import 'package:provider/provider.dart';
-import 'package:grocery_app/screens/profile_screen.dart';
+import 'package:grocery_app/providers/cart_provider.dart';
+import 'package:grocery_app/services/auth_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +21,78 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
   final TextEditingController _searchController = TextEditingController();
+  User? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final user = await AuthService.getCurrentUser();
+    setState(() {
+      _currentUser = user;
+    });
+  }
+
+  Future<void> _logout() async {
+    await AuthService.logout();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Logout',
+            style: TextStyle(
+              fontSize: ResponsiveUtils.responsiveSize(context, mobile: 18, tablet: 20, desktop: 22),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: TextStyle(
+              fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _logout();
+              },
+              child: Text(
+                'Logout',
+                style: TextStyle(
+                  fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -44,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 1,
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
+          // Cart Icon with badge
           IconButton(
             icon: Badge(
               label: Consumer<CartProvider>(
@@ -71,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          // User Profile Icon
           if (!isMobile)
             IconButton(
               icon: Icon(
@@ -79,7 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.green,
               ),
               onPressed: () {
-                // Navigate to profile screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
               },
             ),
           const SizedBox(width: 8),
@@ -89,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with greeting
+            // Welcome Header with user name
             Padding(
               padding: EdgeInsets.fromLTRB(
                 padding.left,
@@ -101,7 +181,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, Welcome!',
+                    _currentUser != null 
+                      ? 'Hello, ${_currentUser!.name}!'
+                      : 'Hello, Welcome!',
                     style: TextStyle(
                       fontSize: ResponsiveUtils.responsiveSize(context, mobile: 18, tablet: 20, desktop: 22),
                       fontWeight: FontWeight.bold,
@@ -201,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      // Floating Action Button for quick access
+      // Floating Action Button for quick access to cart
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -238,23 +320,23 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Badge(
-              label: Consumer<CartProvider>(
-                builder: (context, cartProvider, child) {
-                  return Text(
+            icon: Consumer<CartProvider>(
+              builder: (context, cartProvider, child) {
+                return Badge(
+                  label: Text(
                     cartProvider.itemCount.toString(),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
-                  );
-                },
-              ),
-              child: Icon(
-                Icons.shopping_cart,
-                size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-              ),
+                  ),
+                  child: Icon(
+                    Icons.shopping_cart,
+                    size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
+                  ),
+                );
+              },
             ),
             label: 'Cart',
           ),
@@ -275,18 +357,131 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         onTap: (index) {
           if (index == 2) {
+            // Cart
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const CartScreen()),
             );
-          }else if (index == 4) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfileScreen()),
-    );
-  }
-          // Handle other tab clicks
+          } else if (index == 4) {
+            // Profile
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          } else if (index == 1) {
+            // Search - focus on search field
+            FocusScope.of(context).requestFocus(FocusNode());
+            Future.delayed(const Duration(milliseconds: 100), () {
+              _searchController.selection = TextSelection.fromPosition(
+                TextPosition(offset: _searchController.text.length),
+              );
+            });
+          }
+          // Handle other tab clicks if needed
         },
+      ),
+
+      // Drawer for additional options
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.green,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 30,
+                      color: Colors.green,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    _currentUser?.name ?? 'Guest',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    _currentUser?.email ?? '',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.green),
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.shopping_bag, color: Colors.green),
+              title: Text('My Orders'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to orders screen
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.favorite, color: Colors.green),
+              title: Text('Favorites'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to favorites screen
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications, color: Colors.green),
+              title: Text('Notifications'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to notifications screen
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.settings, color: Colors.grey),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to settings screen
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.help, color: Colors.grey),
+              title: Text('Help & Support'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to help screen
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text('Logout'),
+              onTap: () {
+                Navigator.pop(context);
+                _showLogoutDialog();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
