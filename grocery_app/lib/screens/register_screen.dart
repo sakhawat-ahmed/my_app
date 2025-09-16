@@ -1,46 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/services/auth_services.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
-import 'package:grocery_app/screens/register_screen.dart';
-import 'package:grocery_app/screens/home_screen.dart';
+import 'package:grocery_app/models/user_model.dart';
+import 'package:grocery_app/screens/login_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _addressController = TextEditingController();
+  
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
       try {
-        final user = await AuthService.login(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
+        final user = User(
+          id: const Uuid().v4(),
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          phone: _phoneController.text.trim(),
+          password: _passwordController.text.trim(),
+          address: _addressController.text.trim(),
+          createdAt: DateTime.now(),
         );
 
-        if (user != null) {
+        final success = await AuthService.register(user);
+
+        if (success) {
           Fluttertoast.showToast(
-            msg: "Login successful!",
+            msg: "Registration successful! Please login.",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.green,
@@ -49,11 +67,11 @@ class _LoginScreenState extends State<LoginScreen> {
           
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
           );
         } else {
           Fluttertoast.showToast(
-            msg: "Invalid email or password",
+            msg: "Email or phone number already exists",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red,
@@ -81,33 +99,50 @@ class _LoginScreenState extends State<LoginScreen> {
     final padding = ResponsiveUtils.responsivePadding(context);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Account'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: padding,
           child: Column(
             children: [
               // Header
-              SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 40, tablet: 60, desktop: 80)),
+              SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
               _buildHeader(),
-              SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 40, tablet: 60, desktop: 80)),
+              SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
 
-              // Login Form
+              // Registration Form
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
+                    _buildNameField(),
+                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
                     _buildEmailField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 24, desktop: 28)),
+                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
+                    _buildPhoneField(),
+                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
                     _buildPasswordField(),
+                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
+                    _buildConfirmPasswordField(),
+                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
+                    _buildAddressField(),
                     SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32)),
-                    _buildLoginButton(),
+                    _buildRegisterButton(),
                   ],
                 ),
               ),
 
-              // Register Link
+              // Login Link
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32)),
-              _buildRegisterLink(),
+              _buildLoginLink(),
             ],
           ),
         ),
@@ -119,13 +154,13 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         Icon(
-          Icons.shopping_cart,
-          size: ResponsiveUtils.responsiveSize(context, mobile: 80, tablet: 100, desktop: 120),
+          Icons.person_add,
+          size: ResponsiveUtils.responsiveSize(context, mobile: 60, tablet: 80, desktop: 100),
           color: Colors.green,
         ),
         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
         Text(
-          'Welcome Back',
+          'Create Account',
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
             fontWeight: FontWeight.bold,
@@ -134,13 +169,30 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
         Text(
-          'Sign in to continue shopping',
+          'Join us and start shopping',
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
             color: Colors.grey[600],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildNameField() {
+    return TextFormField(
+      controller: _nameController,
+      decoration: InputDecoration(
+        labelText: 'Full Name',
+        prefixIcon: const Icon(Icons.person, color: Colors.green),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your name';
+        }
+        return null;
+      },
     );
   }
 
@@ -159,6 +211,27 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         if (!value.contains('@')) {
           return 'Please enter a valid email';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPhoneField() {
+    return TextFormField(
+      controller: _phoneController,
+      keyboardType: TextInputType.phone,
+      decoration: InputDecoration(
+        labelText: 'Phone Number',
+        prefixIcon: const Icon(Icons.phone, color: Colors.green),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your phone number';
+        }
+        if (value.length < 10) {
+          return 'Please enter a valid phone number';
         }
         return null;
       },
@@ -197,11 +270,55 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildConfirmPasswordField() {
+    return TextFormField(
+      controller: _confirmPasswordController,
+      obscureText: _obscureConfirmPassword,
+      decoration: InputDecoration(
+        labelText: 'Confirm Password',
+        prefixIcon: const Icon(Icons.lock_outline, color: Colors.green),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+            color: Colors.grey,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscureConfirmPassword = !_obscureConfirmPassword;
+            });
+          },
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please confirm your password';
+        }
+        if (value != _passwordController.text) {
+          return 'Passwords do not match';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildAddressField() {
+    return TextFormField(
+      controller: _addressController,
+      decoration: InputDecoration(
+        labelText: 'Address (Optional)',
+        prefixIcon: const Icon(Icons.location_on, color: Colors.green),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      maxLines: 2,
+    );
+  }
+
+  Widget _buildRegisterButton() {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _isLoading ? null : _login,
+        onPressed: _isLoading ? null : _register,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.green,
           padding: EdgeInsets.symmetric(
@@ -212,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: _isLoading
             ? const CircularProgressIndicator(color: Colors.white)
             : Text(
-                'Login',
+                'Register',
                 style: TextStyle(
                   fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
                   fontWeight: FontWeight.bold,
@@ -222,25 +339,25 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildRegisterLink() {
+  Widget _buildLoginLink() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Don't have an account? ",
+          "Already have an account? ",
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
           ),
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const RegisterScreen()),
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
             );
           },
           child: Text(
-            'Register',
+            'Login',
             style: TextStyle(
               fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
               color: Colors.green,
