@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_app/models/user_model.dart';
+import '../models/user_model.dart';
+import 'dart:convert';
 
 class AuthService {
   static const String _usersKey = 'users';
@@ -22,8 +23,8 @@ class AuthService {
       }
       
       users.add(user);
-      final userMaps = users.map((u) => u.toMap()).toList();
-      await prefs.setStringList(_usersKey, userMaps.map((map) => _encodeMap(map)).toList());
+      final userJsonList = users.map((u) => json.encode(u.toMap())).toList();
+      await prefs.setStringList(_usersKey, userJsonList);
       
       return true;
     } catch (e) {
@@ -49,7 +50,7 @@ class AuthService {
       
       if (user.id.isNotEmpty) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(_currentUserKey, _encodeMap(user.toMap()));
+        await prefs.setString(_currentUserKey, json.encode(user.toMap()));
         return user;
       }
       
@@ -65,7 +66,7 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       final userString = prefs.getString(_currentUserKey);
       if (userString != null) {
-        final userMap = _decodeMap(userString);
+        final userMap = json.decode(userString);
         return User.fromMap(userMap);
       }
       return null;
@@ -85,26 +86,9 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userStrings = prefs.getStringList(_usersKey) ?? [];
-      return userStrings.map((string) => User.fromMap(_decodeMap(string))).toList();
+      return userStrings.map((string) => User.fromMap(json.decode(string))).toList();
     } catch (e) {
       return [];
     }
-  }
-
-  // Helper methods for encoding/decoding maps
-  static String _encodeMap(Map<String, dynamic> map) {
-    return map.entries.map((e) => '${e.key}:${e.value}').join(';');
-  }
-
-  static Map<String, dynamic> _decodeMap(String string) {
-    final map = <String, dynamic>{};
-    final pairs = string.split(';');
-    for (final pair in pairs) {
-      final parts = pair.split(':');
-      if (parts.length == 2) {
-        map[parts[0]] = parts[1];
-      }
-    }
-    return map;
   }
 }

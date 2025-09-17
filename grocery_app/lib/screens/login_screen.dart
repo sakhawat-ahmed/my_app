@@ -3,7 +3,6 @@ import 'package:grocery_app/services/auth_services.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/screens/register_screen.dart';
 import 'package:grocery_app/screens/home_screen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,12 +38,12 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (user != null) {
-          Fluttertoast.showToast(
-            msg: "Login successful!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login successful!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
           );
           
           Navigator.pushReplacement(
@@ -52,21 +51,21 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Invalid email or password",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Invalid email or password'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 2),
+            ),
           );
         }
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: "An error occurred. Please try again.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
         );
       } finally {
         setState(() {

@@ -3,7 +3,6 @@ import 'package:grocery_app/services/auth_services.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/models/user_model.dart';
 import 'package:grocery_app/screens/login_screen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uuid/uuid.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -57,12 +56,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         final success = await AuthService.register(user);
 
         if (success) {
-          Fluttertoast.showToast(
-            msg: "Registration successful! Please login.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Registration successful! Please login.'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
           );
           
           Navigator.pushReplacement(
@@ -70,21 +69,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
             MaterialPageRoute(builder: (context) => const LoginScreen()),
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Email or phone number already exists",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Email or phone number already exists'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+            ),
           );
         }
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: "An error occurred. Please try again.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
         );
       } finally {
         setState(() {
@@ -335,7 +334,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-      ),
+      );
     );
   }
 
@@ -365,7 +364,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
-      ],
+  ],
     );
   }
 }
