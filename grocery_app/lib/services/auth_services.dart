@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_model.dart';
+import 'package:grocery_app/models/user_model.dart';
 import 'dart:convert';
 
 class AuthService {
@@ -89,6 +89,38 @@ class AuthService {
       return userStrings.map((string) => User.fromMap(json.decode(string))).toList();
     } catch (e) {
       return [];
+    }
+  }
+
+  // Update user
+  static Future<bool> updateUser(User updatedUser) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final users = await getUsers();
+      
+      // Find the user index
+      final index = users.indexWhere((user) => user.id == updatedUser.id);
+      
+      if (index != -1) {
+        // Update the user
+        users[index] = updatedUser;
+        
+        // Save updated users list
+        final userJsonList = users.map((u) => json.encode(u.toMap())).toList();
+        await prefs.setStringList(_usersKey, userJsonList);
+        
+        // Update current user if it's the same user
+        final currentUser = await getCurrentUser();
+        if (currentUser != null && currentUser.id == updatedUser.id) {
+          await prefs.setString(_currentUserKey, json.encode(updatedUser.toMap()));
+        }
+        
+        return true;
+      }
+      
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 }

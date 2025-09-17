@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
+import 'package:grocery_app/models/user_model.dart';
 
 class ProfileHeader extends StatelessWidget {
   final bool isEditing;
+  final User? user;
 
-  const ProfileHeader({super.key, required this.isEditing});
+  const ProfileHeader({super.key, required this.isEditing, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class ProfileHeader extends StatelessWidget {
         ),
         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
         Text(
-          'John Doe',
+          user?.name ?? 'User Name',
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 24, desktop: 28),
             fontWeight: FontWeight.bold,
@@ -56,14 +58,26 @@ class ProfileHeader extends StatelessWidget {
         ),
         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 4, tablet: 6, desktop: 8)),
         Text(
-          'Premium Member',
+          user?.email ?? 'user@example.com',
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-            color: Colors.green,
-            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+          ),
+        ),
+        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 4, tablet: 6, desktop: 8)),
+        Text(
+          'Member since ${_formatDate(user?.createdAt)}',
+          style: TextStyle(
+            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 14, desktop: 16),
+            color: Colors.grey[500],
           ),
         ),
       ],
     );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Unknown';
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

@@ -5,6 +5,8 @@ import 'package:grocery_app/widgets/profile/personal_info_form.dart';
 import 'package:grocery_app/widgets/profile/preferences_section.dart';
 import 'package:grocery_app/widgets/profile/account_actions.dart';
 import 'package:grocery_app/widgets/profile/save_button.dart';
+import 'package:grocery_app/services/auth_services.dart';
+import 'package:grocery_app/models/user_model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,14 +16,46 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _nameController = TextEditingController(text: 'John Doe');
-  final TextEditingController _emailController = TextEditingController(text: 'john.doe@example.com');
-  final TextEditingController _phoneController = TextEditingController(text: '+1 (555) 123-4567');
-  final TextEditingController _addressController = TextEditingController(text: '123 Main St, City, State 12345');
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   bool _isEditing = false;
+  bool _isLoading = true;
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
+  User? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final user = await AuthService.getCurrentUser();
+      if (user != null) {
+        setState(() {
+          _currentUser = user;
+          _nameController.text = user.name;
+          _emailController.text = user.email;
+          _phoneController.text = user.phone;
+          _addressController.text = user.address ?? '';
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -32,9 +66,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
+  Future<void> _saveProfile() async {
+    if (_currentUser != null) {
+      final updatedUser = User(
+        id: _currentUser!.id,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        password: _currentUser!.password,
+        address: _addressController.text.trim(),
+        createdAt: _currentUser!.createdAt,
+      );
+
+      final success = await AuthService.updateUser(updatedUser);
+
+      if (success) {
+        setState(() {
+          _isEditing = false;
+          _currentUser = updatedUser;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile updated successfully'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to update profile'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final padding = ResponsiveUtils.responsivePadding(context);
+
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -67,6 +148,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () {
                 setState(() {
                   _isEditing = false;
+                  // Reset to original values
+                  _nameController.text = _currentUser?.name ?? '';
+                  _emailController.text = _currentUser?.email ?? '';
+                  _phoneController.text = _currentUser?.phone ?? '';
+                  _addressController.text = _currentUser?.address ?? '';
                 });
               },
             ),
@@ -77,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             // Profile Header
-            ProfileHeader(isEditing: _isEditing),
+            ProfileHeader(isEditing: _isEditing, user: _currentUser),
             SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 32, desktop: 40)),
 
             // Personal Information
@@ -126,17 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (_isEditing) ...[
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 40, desktop: 48)),
               SaveButton(
-                onPressed: () {
-                  setState(() {
-                    _isEditing = false;
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile updated successfully'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                },
+                onPressed: _saveProfile,
               ),
             ],
 
@@ -162,23 +238,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _handleLanguageTap() {
-    // Language selection logic
-    print('Language tap');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Language selection'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   void _handleOrderHistoryTap() {
-    // Navigate to order history
-    print('Order history tap');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Order history'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   void _handlePaymentMethodsTap() {
-    // Navigate to payment methods
-    print('Payment methods tap');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Payment methods'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   void _handleHelpSupportTap() {
-    // Navigate to help center
-    print('Help & support tap');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Help & support'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   void _showLogoutDialog() {
@@ -215,13 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // Perform logout logic
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Logged out successfully'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                _performLogout();
               },
               child: Text(
                 'Logout',
@@ -234,6 +320,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         );
       },
+    );
+  }
+
+  void _performLogout() async {
+    await AuthService.logout();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Logged out successfully'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 }
