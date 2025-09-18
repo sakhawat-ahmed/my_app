@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_app/models/user_model.dart';
+import '../models/user_model.dart';
 import 'dart:convert';
 
 class AuthService {
@@ -76,9 +76,14 @@ class AuthService {
   }
 
   // Logout user
-  static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_currentUserKey);
+  static Future<bool> logout() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_currentUserKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   // Get all users
