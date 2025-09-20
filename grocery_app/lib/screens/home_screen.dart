@@ -130,65 +130,21 @@ class _HomeScreenState extends State<HomeScreen> {
     final padding = ResponsiveUtils.responsivePadding(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Grocery Store',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-            fontSize: ResponsiveUtils.titleFontSize(context),
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 1,
-        iconTheme: const IconThemeData(color: Colors.black),
-        actions: [
-          // Cart Icon with badge
-          IconButton(
-            icon: Badge(
-              label: Consumer<CartProvider>(
-                builder: (context, cartProvider, child) {
-                  return Text(
-                    cartProvider.itemCount.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                },
-              ),
-              child: Icon(
-                Icons.shopping_cart,
-                size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
-                color: Colors.green,
-              ),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CartScreen()),
-              );
-            },
-          ),
-          // User Profile Icon
-          if (!isMobile)
-            IconButton(
-              icon: Icon(
-                Icons.account_circle,
-                size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
-                color: Colors.green,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                );
-              },
-            ),
-          const SizedBox(width: 8),
-        ],
-      ),
+    appBar: AppBar(
+  title: Text(
+    'Grocery Store',
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+      fontSize: ResponsiveUtils.titleFontSize(context),
+    ),
+  ),
+  backgroundColor: Colors.white,
+  elevation: 1,
+  iconTheme: const IconThemeData(color: Colors.black),
+  actions: const [],
+),
+
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,89 +277,58 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey[600],
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.search,
-              size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-            ),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Consumer<CartProvider>(
-              builder: (context, cartProvider, child) {
-                return Badge(
-                  label: Text(
-                    cartProvider.itemCount.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.shopping_cart,
-                    size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-                  ),
-                );
-              },
-            ),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.favorite,
-              size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-            ),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
-            ),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (index) {
-          if (index == 2) {
-            // Cart
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CartScreen()),
-            );
-          } else if (index == 4) {
-            // Profile
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProfileScreen()),
-            );
-          } else if (index == 1) {
-            // Search - focus on search field
-            FocusScope.of(context).requestFocus(FocusNode());
-            Future.delayed(const Duration(milliseconds: 100), () {
-              _searchController.selection = TextSelection.fromPosition(
-                TextPosition(offset: _searchController.text.length),
-              );
-            });
-          }
-          // Handle other tab clicks if needed
-        },
+bottomNavigationBar: BottomNavigationBar(
+  currentIndex: 0,
+  selectedItemColor: Colors.green,
+  unselectedItemColor: Colors.grey[600],
+  showSelectedLabels: true,
+  showUnselectedLabels: true,
+  type: BottomNavigationBarType.fixed,
+  items: [
+    BottomNavigationBarItem(
+      icon: Icon(
+        Icons.home,
+        size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
       ),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(
+        Icons.category,  
+        size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
+      ),
+      label: 'Categories',  
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(
+        Icons.favorite,
+        size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
+      ),
+      label: 'Favorites',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(
+        Icons.person,
+        size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
+      ),
+      label: 'Profile',
+    ),
+  ],
+  onTap: (index) {
+    if (index == 3) {
+      // Profile
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+      );
+    } else if (index == 1) {
+      //  Handle Categories tap if needed
+      
+    }
+  },
+),
+
+
 
       // Drawer for additional options
       drawer: Drawer(
