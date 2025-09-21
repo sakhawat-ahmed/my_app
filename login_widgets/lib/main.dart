@@ -1,140 +1,116 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:rive/rive.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bear Login',
-      theme: ThemeData(useMaterial3: true),
-      home: const BearLoginScreen(),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoaderDownloadPage(),
     );
   }
 }
 
-class BearLoginScreen extends StatefulWidget {
-  const BearLoginScreen({super.key});
+class LoaderDownloadPage extends StatefulWidget {
+  const LoaderDownloadPage({super.key});
 
   @override
-  State<BearLoginScreen> createState() => _BearLoginScreenState();
+  State<LoaderDownloadPage> createState() => _LoaderDownloadPageState();
 }
 
-class _BearLoginScreenState extends State<BearLoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final FocusNode _passwordFocusNode = FocusNode();
+class _LoaderDownloadPageState extends State<LoaderDownloadPage> {
+  StateMachineController? _smController;
+  SMITrigger? _triggerStart;
+  SMINumber? _progressInput;
 
-  bool _isPasswordFocused = false;
+  bool isDownloading = false;
+  double progress = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _passwordFocusNode.addListener(() {
-      setState(() {
-        _isPasswordFocused = _passwordFocusNode.hasFocus;
-      });
-    });
+  void _onRiveInit(Artboard artboard) {
+    const stateMachineName = 'Loadr Icon';
+
+    final controller = StateMachineController.fromArtboard(
+      artboard,
+      stateMachineName,
+    );
+
+    if (controller != null) {
+      artboard.addController(controller);
+      _smController = controller;
+
+      // ✅ Replace with your actual input names (if they exist)
+      _triggerStart =
+          controller.findInput<bool>('StartDownload') as SMITrigger?;
+      _progressInput =
+          controller.findInput<double>('ProgressValue') as SMINumber?;
+
+      // If your machine starts automatically, you don’t need a trigger.
+    } else {
+      debugPrint('⚠️ State machine not found. Check the name.');
+    }
   }
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _passwordFocusNode.dispose();
-    super.dispose();
+  void startDownload() {
+    setState(() {
+      isDownloading = true;
+      progress = 0;
+    });
+
+    // Fire trigger if the machine expects a start action
+    _triggerStart?.fire();
+
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 200));
+      setState(() {
+        progress += 0.05;
+        // Update the Rive number input if it exists
+        _progressInput?.value = progress;
+      });
+      return progress < 1;
+    }).then((_) {
+      setState(() => isDownloading = false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                // Lottie Animal Animation
-                SizedBox(
-                  height: 250,
-                  child: Lottie.asset(
-                    'assets/bear.json',
-                    repeat: true,
-                    animate: true,
-                    // 👇 You can trigger different animations if the file supports it
-                    frameRate: FrameRate.max,
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Bear Login",
-                        style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 20),
-                      TextField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: "Email",
-                          prefixIcon: Icon(Icons.email),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextField(
-                        controller: _passwordController,
-                        focusNode: _passwordFocusNode,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: "Password",
-                          prefixIcon: Icon(Icons.lock),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6A11CB),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        child: const Text("Sign In"),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Text(
-                  _isPasswordFocused
-                      ? "🙈 The bear is shy, it’s covering its eyes!"
-                      : "👀 Type your password to see the bear hide.",
-                  style: const TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,
-                )
-              ],
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Rive Loader Demo',
+              style: TextStyle(color: Colors.white, fontSize: 22),
             ),
-          ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: 220,
+              height: 220,
+              child: RiveAnimation.asset(
+                'assets/loader_icon.riv',
+                fit: BoxFit.contain,
+                onInit: _onRiveInit,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: isDownloading ? null : startDownload,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                minimumSize: const Size(180, 50),
+              ),
+              child: Text(
+                isDownloading
+                    ? 'Downloading ${(progress * 100).round()}%'
+                    : 'Download',
+              ),
+            ),
+          ],
         ),
       ),
     );

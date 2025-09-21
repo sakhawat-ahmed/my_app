@@ -60,7 +60,7 @@ class CartScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
-                        ...cartProvider.items.map((item) => CartItemWidget(item: item)).toList(),
+                        ...cartProvider.items.map((item) => CartItemWidget(item: item)),
                         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
                       ],
                     ),
