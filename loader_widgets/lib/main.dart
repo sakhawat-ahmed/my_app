@@ -30,7 +30,7 @@ class _LoaderDownloadPageState extends State<LoaderDownloadPage> {
   double progress = 0;
 
   void _onRiveInit(Artboard artboard) {
-    const stateMachineName = 'Loadr Icon';
+    const stateMachineName = 'loader_icon';
 
     final controller = StateMachineController.fromArtboard(
       artboard,
@@ -84,7 +84,7 @@ class _LoaderDownloadPageState extends State<LoaderDownloadPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Rive Loader Demo',
+              'Rive Loader',
               style: TextStyle(color: Colors.white, fontSize: 22),
             ),
             const SizedBox(height: 30),
