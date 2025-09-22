@@ -94,7 +94,7 @@ class _LoaderDownloadPageState extends State<LoaderDownloadPage> {
               child: RiveAnimation.asset(
                 'assets/loader_icon.riv',
                 fit: BoxFit.contain,
-                onInit: _onRiveInit,
+                
               ),
             ),
             const SizedBox(height: 20),
