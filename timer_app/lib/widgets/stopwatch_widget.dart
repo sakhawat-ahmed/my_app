@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:timer_app/providers/stopwatch_provider.dart';
 
 class StopwatchWidget extends StatelessWidget {
+  const StopwatchWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final stopwatchProvider = Provider.of<StopwatchProvider>(context);
@@ -16,32 +18,32 @@ class StopwatchWidget extends StatelessWidget {
             _formatDuration(elapsed),
             style: Theme.of(context).textTheme.displayLarge,
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (!stopwatchProvider.stopwatch.isRunning) ...[
                 ElevatedButton(
                   onPressed: stopwatchProvider.start,
-                  child: Text('Start'),
+                  child: const Text('Start'),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: stopwatchProvider.reset,
-                  child: Text('Reset'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey,
                   ),
+                  child: Text('Reset'),
                 ),
               ] else ...[
                 ElevatedButton(
                   onPressed: stopwatchProvider.pause,
-                  child: Text('Pause'),
+                  child: const Text('Pause'),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: stopwatchProvider.addLap,
-                  child: Text('Lap'),
+                  child: const Text('Lap'),
                 ),
               ],
             ],

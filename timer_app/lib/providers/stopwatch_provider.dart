@@ -21,7 +21,7 @@ class StopwatchProvider with ChangeNotifier {
       if (_stopwatch.isRunning) {
         // Calculate elapsed time since last save
         final now = DateTime.now();
-        final elapsedSinceSave = now.difference(_stopwatch.startTime!);
+        final elapsedSinceSave = now.difference(_stopwatch.startTime);
         _stopwatch.elapsed += elapsedSinceSave;
         _stopwatch.startTime = now;
         _startTimer();
@@ -66,9 +66,9 @@ class StopwatchProvider with ChangeNotifier {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       final now = DateTime.now();
-      _stopwatch.elapsed = _stopwatch.pausedDuration! + now.difference(_stopwatch.startTime!);
+      _stopwatch.elapsed = _stopwatch.pausedDuration + now.difference(_stopwatch.startTime);
       notifyListeners();
     });
   }

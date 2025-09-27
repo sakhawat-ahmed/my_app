@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:async';
+
 class TimerModel {
   final String id;
   final Duration initialDuration;
@@ -5,6 +8,7 @@ class TimerModel {
   bool isRunning;
   final DateTime createdAt;
   String? title;
+  Timer? ticker;
 
   TimerModel({
     required this.id,
@@ -15,21 +19,6 @@ class TimerModel {
     this.title,
   });
 
-  TimerModel copyWith({
-    Duration? remainingDuration,
-    bool? isRunning,
-    String? title,
-  }) {
-    return TimerModel(
-      id: id,
-      initialDuration: initialDuration,
-      remainingDuration: remainingDuration ?? this.remainingDuration,
-      isRunning: isRunning ?? this.isRunning,
-      createdAt: createdAt,
-      title: title ?? this.title,
-    );
-  }
-
   double get progress {
     if (initialDuration.inSeconds == 0) return 0;
     return 1 - (remainingDuration.inSeconds / initialDuration.inSeconds);
@@ -37,12 +26,27 @@ class TimerModel {
 
   bool get isFinished => remainingDuration.inSeconds <= 0;
 
-  // Serialization methods
+  void start() {
+    isRunning = true;
+  }
+
+  void pause() {
+    isRunning = false;
+    ticker?.cancel();
+  }
+
+  void reset() {
+    isRunning = false;
+    remainingDuration = initialDuration;
+    ticker?.cancel();
+  }
+
+  // JSON Serialization
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'initialDuration': initialDuration.inMicroseconds,
-      'remainingDuration': remainingDuration.inMicroseconds,
+      'initialDuration': initialDuration.inSeconds,
+      'remainingDuration': remainingDuration.inSeconds,
       'isRunning': isRunning,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'title': title,
@@ -52,11 +56,24 @@ class TimerModel {
   factory TimerModel.fromJson(Map<String, dynamic> json) {
     return TimerModel(
       id: json['id'],
-      initialDuration: Duration(microseconds: json['initialDuration']),
-      remainingDuration: Duration(microseconds: json['remainingDuration']),
+      initialDuration: Duration(seconds: json['initialDuration']),
+      remainingDuration: Duration(seconds: json['remainingDuration']),
       isRunning: json['isRunning'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
       title: json['title'],
     );
+  }
+
+  static String listToJson(List<TimerModel> timers) {
+    return json.encode(timers.map((timer) => timer.toJson()).toList());
+  }
+
+  static List<TimerModel> listFromJson(String jsonString) {
+    try {
+      final List<dynamic> jsonList = json.decode(jsonString);
+      return jsonList.map((json) => TimerModel.fromJson(json)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 }

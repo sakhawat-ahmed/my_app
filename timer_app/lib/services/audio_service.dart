@@ -3,33 +3,20 @@ import 'package:vibration/vibration.dart';
 
 class AudioService {
   static final AudioPlayer _player = AudioPlayer();
-  static bool _isPlaying = false;
 
-  static Future<void> playSound(String soundName) async {
+  static Future<void> playAlarmSound() async {
     try {
-      if (_isPlaying) {
-        await _player.stop();
-      }
-      
-      await _player.play(AssetSource('sounds/$soundName.mp3'));
-      _isPlaying = true;
-      
-      _player.onPlayerComplete.listen((event) {
-        _isPlaying = false;
-      });
+      await _player.play(AssetSource('sounds/alarm.mp3'));
     } catch (e) {
       print('Error playing sound: $e');
+      // Fallback: use system vibration if sound fails
+      await vibrate();
     }
   }
 
-  static Future<void> stopSound() async {
-    await _player.stop();
-    _isPlaying = false;
-  }
-
-  static Future<void> vibrate({int duration = 500}) async {
+  static Future<void> vibrate() async {
     if (await Vibration.hasVibrator() ?? false) {
-      await Vibration.vibrate(duration: duration);
+      Vibration.vibrate(duration: 1000);
     }
   }
 }
