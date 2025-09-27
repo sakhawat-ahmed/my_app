@@ -1,16 +1,6 @@
-import 'package:hive/hive.dart';
-
-part 'lap_model.g.dart';
-
-@HiveType(typeId: 2)
 class LapModel {
-  @HiveField(0)
   final Duration duration;
-  
-  @HiveField(1)
   final int lapNumber;
-  
-  @HiveField(2)
   final DateTime timestamp;
 
   LapModel({
@@ -30,5 +20,22 @@ class LapModel {
     } else {
       return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${milliseconds.toString().padLeft(3, '0').substring(0, 2)}';
     }
+  }
+
+  // Serialization methods
+  Map<String, dynamic> toJson() {
+    return {
+      'duration': duration.inMicroseconds,
+      'lapNumber': lapNumber,
+      'timestamp': timestamp.millisecondsSinceEpoch,
+    };
+  }
+
+  factory LapModel.fromJson(Map<String, dynamic> json) {
+    return LapModel(
+      duration: Duration(microseconds: json['duration']),
+      lapNumber: json['lapNumber'],
+      timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp']),
+    );
   }
 }

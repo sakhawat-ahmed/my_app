@@ -1,23 +1,10 @@
-import 'package:hive/hive.dart';
 import 'lap_model.dart';
 
-part 'stopwatch_model.g.dart';
-
-@HiveType(typeId: 1)
 class StopwatchModel {
-  @HiveField(0)
   Duration elapsed;
-  
-  @HiveField(1)
   bool isRunning;
-  
-  @HiveField(2)
   List<LapModel> laps;
-  
-  @HiveField(3)
   DateTime? startTime;
-  
-  @HiveField(4)
   Duration? pausedDuration;
 
   StopwatchModel({
@@ -42,5 +29,30 @@ class StopwatchModel {
     laps.clear();
     startTime = null;
     pausedDuration = null;
+  }
+
+  // Serialization methods
+  Map<String, dynamic> toJson() {
+    return {
+      'elapsed': elapsed.inMicroseconds,
+      'isRunning': isRunning,
+      'laps': laps.map((lap) => lap.toJson()).toList(),
+      'startTime': startTime?.millisecondsSinceEpoch,
+      'pausedDuration': pausedDuration?.inMicroseconds,
+    };
+  }
+
+  factory StopwatchModel.fromJson(Map<String, dynamic> json) {
+    return StopwatchModel(
+      elapsed: Duration(microseconds: json['elapsed']),
+      isRunning: json['isRunning'],
+      laps: (json['laps'] as List).map((lapJson) => LapModel.fromJson(lapJson)).toList(),
+      startTime: json['startTime'] != null 
+          ? DateTime.fromMillisecondsSinceEpoch(json['startTime'])
+          : null,
+      pausedDuration: json['pausedDuration'] != null
+          ? Duration(microseconds: json['pausedDuration'])
+          : null,
+    );
   }
 }

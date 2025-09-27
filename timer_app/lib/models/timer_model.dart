@@ -1,25 +1,9 @@
-import 'package:hive/hive.dart';
-
-part 'timer_model.g.dart';
-
-@HiveType(typeId: 0)
 class TimerModel {
-  @HiveField(0)
   final String id;
-  
-  @HiveField(1)
   final Duration initialDuration;
-  
-  @HiveField(2)
   Duration remainingDuration;
-  
-  @HiveField(3)
   bool isRunning;
-  
-  @HiveField(4)
   final DateTime createdAt;
-  
-  @HiveField(5)
   String? title;
 
   TimerModel({
@@ -52,4 +36,27 @@ class TimerModel {
   }
 
   bool get isFinished => remainingDuration.inSeconds <= 0;
+
+  // Serialization methods
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'initialDuration': initialDuration.inMicroseconds,
+      'remainingDuration': remainingDuration.inMicroseconds,
+      'isRunning': isRunning,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'title': title,
+    };
+  }
+
+  factory TimerModel.fromJson(Map<String, dynamic> json) {
+    return TimerModel(
+      id: json['id'],
+      initialDuration: Duration(microseconds: json['initialDuration']),
+      remainingDuration: Duration(microseconds: json['remainingDuration']),
+      isRunning: json['isRunning'],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
+      title: json['title'],
+    );
+  }
 }
