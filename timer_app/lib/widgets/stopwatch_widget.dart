@@ -33,7 +33,7 @@ class StopwatchWidget extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey,
                   ),
-                  child: Text('Reset'),
+                  child: const Text('Reset'),
                 ),
               ] else ...[
                 ElevatedButton(

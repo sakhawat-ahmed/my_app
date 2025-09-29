@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
             },
           ),
         ],
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
+        children: const [
           TimerScreen(),
           StopwatchScreen(),
         ],

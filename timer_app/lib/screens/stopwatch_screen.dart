@@ -9,15 +9,15 @@ class StopwatchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
+    return const Padding(
+      padding: EdgeInsets.all(16),
       child: Column(
         children: [
           Expanded(
             flex: 2,
             child: StopwatchDisplay(),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Expanded(
             flex: 3,
             child: LapList(),

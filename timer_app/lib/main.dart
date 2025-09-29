@@ -5,7 +5,7 @@ import 'package:timer_app/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
             title: 'Timer App',
             theme: appProvider.currentTheme,
             debugShowCheckedModeBanner: false,
-            home: HomeScreen(),
+            home: const HomeScreen(),
           );
         },
       ),
