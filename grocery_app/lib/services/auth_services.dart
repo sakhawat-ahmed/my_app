@@ -5,6 +5,7 @@ import 'dart:convert';
 class AuthService {
   static const String _usersKey = 'users';
   static const String _currentUserKey = 'currentUser';
+  static const String _themePreferenceKey = 'isDarkMode';
 
   // Register new user
   static Future<bool> register(User user) async {
@@ -125,6 +126,27 @@ class AuthService {
       
       return false;
     } catch (e) {
+      return false;
+    }
+  }
+
+  // Save theme preference
+  static Future<void> saveThemePreference(bool isDarkMode) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_themePreferenceKey, isDarkMode);
+    } catch (e) {
+      print('Error saving theme preference: $e');
+    }
+  }
+
+  // Get theme preference
+  static Future<bool> getThemePreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_themePreferenceKey) ?? false;
+    } catch (e) {
+      print('Error getting theme preference: $e');
       return false;
     }
   }

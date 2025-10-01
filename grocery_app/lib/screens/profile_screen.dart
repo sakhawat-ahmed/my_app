@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/providers/theme_provider.dart';
 import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/widgets/profile/profile_header.dart';
@@ -8,6 +9,7 @@ import 'package:grocery_app/widgets/profile/account_actions.dart';
 import 'package:grocery_app/widgets/profile/save_button.dart';
 import 'package:grocery_app/services/auth_services.dart';
 import 'package:grocery_app/models/user_model.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -338,17 +340,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: ResponsiveUtils.responsiveSize(context, mobile: 18, tablet: 20, desktop: 22),
-          fontWeight: FontWeight.bold,
-          color: Colors.grey[800],
-        ),
+Widget _buildSectionTitle(String title) {
+  final themeProvider = Provider.of<ThemeProvider>(context);
+  
+  return Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      title,
+      style: TextStyle(
+        fontSize: ResponsiveUtils.responsiveSize(context, mobile: 18, tablet: 20, desktop: 22),
+        fontWeight: FontWeight.bold,
+        color: themeProvider.textColor,
       ),
-    );
-  }
+    ),
+  );
+}
 }

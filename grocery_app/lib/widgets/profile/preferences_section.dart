@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:grocery_app/providers/theme_provider.dart';
+import 'package:grocery_app/services/auth_services.dart';
 
 class PreferencesSection extends StatelessWidget {
   final bool notificationsEnabled;
@@ -19,6 +22,8 @@ class PreferencesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Column(
       children: [
         _buildSwitchTile(
@@ -27,14 +32,20 @@ class PreferencesSection extends StatelessWidget {
           subtitle: 'Receive order updates and promotions',
           value: notificationsEnabled,
           onChanged: onNotificationsChanged,
+          themeProvider: themeProvider,
         ),
         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
         _buildSwitchTile(
           context: context,
           title: 'Dark Mode',
           subtitle: 'Switch to dark theme',
-          value: darkModeEnabled,
-          onChanged: onDarkModeChanged,
+          value: themeProvider.isDarkMode,
+          onChanged: (value) async {
+            themeProvider.setTheme(value);
+            await AuthService.saveThemePreference(value);
+            onDarkModeChanged(value);
+          },
+          themeProvider: themeProvider,
         ),
         SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
         _buildListTile(
@@ -43,6 +54,7 @@ class PreferencesSection extends StatelessWidget {
           subtitle: 'English',
           icon: Icons.language,
           onTap: onLanguageTap,
+          themeProvider: themeProvider,
         ),
       ],
     );
@@ -54,12 +66,20 @@ class PreferencesSection extends StatelessWidget {
     required String subtitle,
     required bool value,
     required Function(bool) onChanged,
+    required ThemeProvider themeProvider,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: themeProvider.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: themeProvider.borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: SwitchListTile(
         title: Text(
@@ -67,18 +87,19 @@ class PreferencesSection extends StatelessWidget {
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
             fontWeight: FontWeight.w500,
+            color: themeProvider.textColor,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-            color: Colors.grey[600],
+            color: themeProvider.secondaryTextColor,
           ),
         ),
         value: value,
         onChanged: onChanged,
-        activeThumbColor: Colors.green,
+        activeColor: Colors.green,
       ),
     );
   }
@@ -89,12 +110,20 @@ class PreferencesSection extends StatelessWidget {
     required String subtitle,
     required IconData icon,
     required Function() onTap,
+    required ThemeProvider themeProvider,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: themeProvider.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: themeProvider.borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: ListTile(
         leading: Icon(icon, color: Colors.green),
@@ -103,18 +132,19 @@ class PreferencesSection extends StatelessWidget {
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
             fontWeight: FontWeight.w500,
+            color: themeProvider.textColor,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-            color: Colors.grey[600],
+            color: themeProvider.secondaryTextColor,
           ),
         ),
         trailing: Icon(
           Icons.chevron_right,
-          color: Colors.grey[400],
+          color: themeProvider.secondaryTextColor,
           size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
         ),
         onTap: onTap,

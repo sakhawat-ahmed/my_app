@@ -4,6 +4,7 @@ import 'package:grocery_app/models/product.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../utils/responsive_utils.dart';
+import '../providers/theme_provider.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -13,18 +14,28 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final isMobile = ResponsiveUtils.isMobile(context);
     final imageSize = ResponsiveUtils.productImageSize(context);
     final fontSize = ResponsiveUtils.responsiveSize(context, mobile: 10, tablet: 12, desktop: 14);
     final titleFontSize = ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 14, desktop: 16);
     final priceFontSize = ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18);
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      decoration: BoxDecoration(
+        color: themeProvider.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, 
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Image Section
           Container(
@@ -61,7 +72,7 @@ class ProductCard extends StatelessWidget {
             padding: EdgeInsets.all(ResponsiveUtils.responsiveSize(context, mobile: 6, tablet: 8, desktop: 10)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, 
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Product Name
                 Text(
@@ -70,6 +81,7 @@ class ProductCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: titleFontSize,
                     height: 1.1,
+                    color: themeProvider.textColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -79,7 +91,7 @@ class ProductCard extends StatelessWidget {
                 Text(
                   product.description,
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: themeProvider.secondaryTextColor,
                     fontSize: fontSize,
                     height: 1.0,
                   ),
@@ -110,7 +122,7 @@ class ProductCard extends StatelessWidget {
                       '(${product.reviewCount})',
                       style: TextStyle(
                         fontSize: fontSize - 1,
-                        color: Colors.grey[600],
+                        color: themeProvider.secondaryTextColor,
                       ),
                     ),
                   ],

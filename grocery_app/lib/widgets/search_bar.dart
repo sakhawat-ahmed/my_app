@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/utils/responsive_utils.dart';
+import '../utils/responsive_utils.dart';
+import '../providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -9,22 +11,32 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return TextField(
       controller: controller,
       focusNode: focusNode,
+      style: TextStyle(
+        fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
+        color: themeProvider.textColor,
+      ),
       decoration: InputDecoration(
         hintText: 'Search for products...',
+        hintStyle: TextStyle(
+          color: themeProvider.secondaryTextColor,
+          fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
+        ),
         prefixIcon: Icon(
           Icons.search,
           size: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 24, desktop: 28),
-          color: Colors.grey[600],
+          color: themeProvider.secondaryTextColor,
         ),
         suffixIcon: controller.text.isNotEmpty
             ? IconButton(
                 icon: Icon(
                   Icons.clear,
                   size: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 24, desktop: 28),
-                  color: Colors.grey[600],
+                  color: themeProvider.secondaryTextColor,
                 ),
                 onPressed: () {
                   controller.clear();
@@ -36,18 +48,11 @@ class SearchBar extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         filled: true,
-        fillColor: Colors.grey[100],
+        fillColor: themeProvider.inputFillColor,
         contentPadding: EdgeInsets.symmetric(
           vertical: ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 16, desktop: 20),
           horizontal: 20,
         ),
-        hintStyle: TextStyle(
-          color: Colors.grey[600],
-          fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
-        ),
-      ),
-      style: TextStyle(
-        fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
       ),
       onChanged: (value) {
         // Handle search functionality
