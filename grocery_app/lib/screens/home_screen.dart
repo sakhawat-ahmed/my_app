@@ -5,7 +5,7 @@ import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/screens/profile_screen.dart';
 import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/widgets/category_list.dart';
-import 'package:grocery_app/widgets/product_grid.dart';
+import 'package:grocery_app/widgets/product_grid.dart'; // Add this import
 import 'package:grocery_app/widgets/search_bar.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
@@ -130,21 +130,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final padding = ResponsiveUtils.responsivePadding(context);
 
     return Scaffold(
-    appBar: AppBar(
-  title: Text(
-    'Grocery Store',
-    style: TextStyle(
-      fontWeight: FontWeight.bold,
-      color: Colors.black,
-      fontSize: ResponsiveUtils.titleFontSize(context),
-    ),
-  ),
-  backgroundColor: Colors.white,
-  elevation: 1,
-  iconTheme: const IconThemeData(color: Colors.black),
-  actions: const [],
-),
-
+      appBar: AppBar(
+        title: Text(
+          'Grocery Store',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: ResponsiveUtils.titleFontSize(context),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Products Grid
             Expanded(
-              child: ProductGrid(category: selectedCategory),
+              child: ProductGrid(category: selectedCategory), // This should work now
             ),
           ],
         ),
@@ -277,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // Bottom Navigation Bar
-bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
   currentIndex: 0,
   selectedItemColor: Colors.green,
   unselectedItemColor: Colors.grey[600],
@@ -294,10 +292,10 @@ bottomNavigationBar: BottomNavigationBar(
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        Icons.category,  
+        Icons.search,
         size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
       ),
-      label: 'Categories',  
+      label: 'Search',
     ),
     BottomNavigationBarItem(
       icon: Icon(
@@ -322,13 +320,17 @@ bottomNavigationBar: BottomNavigationBar(
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
       );
     } else if (index == 1) {
-      //  Handle Categories tap if needed
-      
+      // Search - focus on search field
+      FocusScope.of(context).requestFocus(FocusNode());
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length),
+        );
+      });
     }
-  },
-),
-
-
+          // Handle other tab clicks if needed
+        },
+      ),
 
       // Drawer for additional options
       drawer: Drawer(
@@ -336,14 +338,14 @@ bottomNavigationBar: BottomNavigationBar(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.green,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.white,
                     child: Icon(
@@ -352,19 +354,19 @@ bottomNavigationBar: BottomNavigationBar(
                       color: Colors.green,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text(
                     _currentUser?.name ?? 'Guest',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     _currentUser?.email ?? '',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                     ),
@@ -373,57 +375,57 @@ bottomNavigationBar: BottomNavigationBar(
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home, color: Colors.green),
-              title: const Text('Home'),
+              leading: Icon(Icons.home, color: Colors.green),
+              title: Text('Home'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.shopping_bag, color: Colors.green),
-              title: const Text('My Orders'),
+              leading: Icon(Icons.shopping_bag, color: Colors.green),
+              title: Text('My Orders'),
               onTap: () {
                 Navigator.pop(context);
                 // Navigate to orders screen
               },
             ),
             ListTile(
-              leading: const Icon(Icons.favorite, color: Colors.green),
-              title: const Text('Favorites'),
+              leading: Icon(Icons.favorite, color: Colors.green),
+              title: Text('Favorites'),
               onTap: () {
                 Navigator.pop(context);
                 // Navigate to favorites screen
               },
             ),
             ListTile(
-              leading: const Icon(Icons.notifications, color: Colors.green),
-              title: const Text('Notifications'),
+              leading: Icon(Icons.notifications, color: Colors.green),
+              title: Text('Notifications'),
               onTap: () {
                 Navigator.pop(context);
                 // Navigate to notifications screen
               },
             ),
-            const Divider(),
+            Divider(),
             ListTile(
-              leading: const Icon(Icons.settings, color: Colors.grey),
-              title: const Text('Settings'),
+              leading: Icon(Icons.settings, color: Colors.grey),
+              title: Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
                 // Navigate to settings screen
               },
             ),
             ListTile(
-              leading: const Icon(Icons.help, color: Colors.grey),
-              title: const Text('Help & Support'),
+              leading: Icon(Icons.help, color: Colors.grey),
+              title: Text('Help & Support'),
               onTap: () {
                 Navigator.pop(context);
                 // Navigate to help screen
               },
             ),
-            const Divider(),
+            Divider(),
             ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout'),
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text('Logout'),
               onTap: () {
                 Navigator.pop(context);
                 _showLogoutDialog();
