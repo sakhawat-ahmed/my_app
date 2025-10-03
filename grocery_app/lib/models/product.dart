@@ -7,7 +7,7 @@ class Product {
   final String category;
   final double rating;
   final int reviewCount;
-  final bool isFavorite;
+  bool isFavorite; 
   final String unit;
 
   Product({
