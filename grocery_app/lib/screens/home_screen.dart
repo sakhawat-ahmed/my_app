@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:grocery_app/models/user_model.dart';
+import 'package:grocery_app/screens/favorites_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/screens/profile_screen.dart';
 import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/widgets/category_list.dart';
-import 'package:grocery_app/widgets/product_grid.dart'; // Add this import
+import 'package:grocery_app/widgets/product_grid.dart'; 
 import 'package:grocery_app/widgets/search_bar.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:grocery_app/services/auth_services.dart';
+import 'package:grocery_app/providers/favorites_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -275,7 +277,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
+      // In the bottomNavigationBar section:
+bottomNavigationBar: BottomNavigationBar(
   currentIndex: 0,
   selectedItemColor: Colors.green,
   unselectedItemColor: Colors.grey[600],
@@ -298,9 +301,24 @@ class _HomeScreenState extends State<HomeScreen> {
       label: 'Search',
     ),
     BottomNavigationBarItem(
-      icon: Icon(
-        Icons.favorite,
-        size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
+      icon: Consumer<FavoritesProvider>(
+        builder: (context, favoritesProvider, child) {
+          return Badge(
+            label: Text(
+              favoritesProvider.favoriteCount.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            isLabelVisible: favoritesProvider.favoriteCount > 0,
+            child: Icon(
+              Icons.favorite,
+              size: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 26, desktop: 28),
+            ),
+          );
+        },
       ),
       label: 'Favorites',
     ),
@@ -319,6 +337,12 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
       );
+    } else if (index == 2) {
+      // Favorites
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FavoritesScreen()),
+      );
     } else if (index == 1) {
       // Search - focus on search field
       FocusScope.of(context).requestFocus(FocusNode());
@@ -328,9 +352,9 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       });
     }
-          // Handle other tab clicks if needed
-        },
-      ),
+    // Home (index 0) stays on current screen
+  },
+),
 
       // Drawer for additional options
       drawer: Drawer(

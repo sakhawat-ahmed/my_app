@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:grocery_app/models/product.dart';
+import 'package:grocery_app/providers/favorites_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
@@ -71,16 +72,31 @@ class ProductCard extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: IconButton(
-                        icon: Icon(
-                          product.isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: product.isFavorite ? Colors.red : Colors.grey,
-                          size: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-                        ),
-                        onPressed: () {
-                          // Toggle favorite
-                        },
-                      ),
+                     
+child: Positioned(
+  top: 6,
+  right: 6,
+  child: Consumer<FavoritesProvider>(
+    builder: (context, favoritesProvider, child) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: IconButton(
+          icon: Icon(
+            favoritesProvider.isFavorite(product) ? Icons.favorite : Icons.favorite_border,
+            color: favoritesProvider.isFavorite(product) ? Colors.red : Colors.grey,
+            size: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
+          ),
+          onPressed: () {
+            favoritesProvider.toggleFavorite(product);
+          },
+        ),
+      );
+    },
+  ),
+),
                     ),
                   ),
                 ],

@@ -4,6 +4,7 @@ import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/screens/splash_screen.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:grocery_app/providers/theme_provider.dart';
+import 'package:grocery_app/providers/favorites_provider.dart'; 
 import 'package:provider/provider.dart';
 import 'package:grocery_app/services/auth_services.dart';
 
@@ -26,9 +27,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider()..setTheme(isDarkMode),
-        ),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()..setTheme(isDarkMode)),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()), // Add this
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
