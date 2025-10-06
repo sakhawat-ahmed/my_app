@@ -29,10 +29,10 @@ class HomeContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Welcome Header with user name
-          _buildWelcomeHeader(themeProvider, padding),
+          _buildWelcomeHeader(context, themeProvider, padding),
           
           // Categories Title
-          _buildCategoriesTitle(themeProvider, padding),
+          _buildCategoriesTitle(context, themeProvider, padding),
           
           // Category List
           CategoryList(
@@ -41,7 +41,7 @@ class HomeContent extends StatelessWidget {
           ),
           
           // Products Title with results count
-          _buildProductsTitle(themeProvider, padding),
+          _buildProductsTitle(context, themeProvider, padding),
           
           // Products Grid
           Expanded(
@@ -52,7 +52,7 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(ThemeProvider themeProvider, EdgeInsets padding) {
+  Widget _buildWelcomeHeader(BuildContext context, ThemeProvider themeProvider, EdgeInsets padding) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         padding.left,
@@ -86,7 +86,7 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoriesTitle(ThemeProvider themeProvider, EdgeInsets padding) {
+  Widget _buildCategoriesTitle(BuildContext context, ThemeProvider themeProvider, EdgeInsets padding) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         padding.left,
@@ -105,7 +105,7 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProductsTitle(ThemeProvider themeProvider, EdgeInsets padding) {
+  Widget _buildProductsTitle(BuildContext context, ThemeProvider themeProvider, EdgeInsets padding) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         padding.left,
