@@ -149,17 +149,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Notification deleted'),
+            content: const Text('Notification deleted'),
             action: SnackBarAction(
               label: 'Undo',
-              onPressed: () {
-                setState(() {
-                  _notifications.insert(
-                    _notifications.indexOf(notification),
-                    notification,
-                  );
-                });
-              },
+              onPressed: () {},
             ),
           ),
         );

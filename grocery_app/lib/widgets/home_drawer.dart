@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/models/user_model.dart';
 import 'package:grocery_app/screens/favorites_screen.dart';
+import 'package:grocery_app/screens/help_support_screen.dart';
 import 'package:grocery_app/screens/login_screen.dart';
+import 'package:grocery_app/screens/notifications_screen.dart';
+import 'package:grocery_app/screens/settings_screen.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:grocery_app/services/auth_services.dart';
@@ -96,28 +99,40 @@ class HomeDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.notifications, color: Colors.green),
-          title: const Text('Notifications'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
+       ListTile(
+  leading: const Icon(Icons.notifications, color: Colors.green),
+  title: const Text('Notifications'),
+  onTap: () {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+    );
+  },
+),
         const Divider(),
-        ListTile(
-          leading: const Icon(Icons.settings, color: Colors.grey),
-          title: const Text('Settings'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.help, color: Colors.grey),
-          title: const Text('Help & Support'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
+     ListTile(
+  leading: const Icon(Icons.settings, color: Colors.grey),
+  title: const Text('Settings'),
+  onTap: () {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+    );
+  },
+),
+      ListTile(
+  leading: const Icon(Icons.help, color: Colors.grey),
+  title: const Text('Help & Support'),
+  onTap: () {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HelpSupportScreen()),
+    );
+  },
+),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.logout, color: Colors.red),

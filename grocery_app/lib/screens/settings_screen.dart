@@ -78,19 +78,7 @@ class SettingsScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  Consumer<ThemeProvider>(
-                    builder: (context, themeProvider, child) {
-                      return SwitchListTile(
-                        leading: const Icon(Icons.dark_mode, color: Colors.green),
-                        title: const Text('Dark Mode'),
-                        subtitle: const Text('Switch between light and dark theme'),
-                        value: themeProvider.isDarkMode,
-                        onChanged: (value) {
-                          themeProvider.toggleTheme();
-                        },
-                      );
-                    },
-                  ),
+                  _buildThemeSwitch(themeProvider),
                   SettingTile(
                     icon: Icons.language,
                     title: 'Language',
@@ -211,6 +199,24 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildThemeSwitch(ThemeProvider themeProvider) {
+    return ListTile(
+      leading: const Icon(Icons.dark_mode, color: Colors.green),
+      title: const Text('Dark Mode'),
+      subtitle: const Text('Switch between light and dark theme'),
+      trailing: Switch(
+        value: themeProvider.isDarkMode,
+        onChanged: (value) {
+          themeProvider.toggleTheme();
+        },
+        activeColor: Colors.green,
+      ),
+      onTap: () {
+        themeProvider.toggleTheme();
+      },
+    );
+  }
+
   void _showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -221,8 +227,8 @@ class SettingsScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
+                leading: const Icon(Icons.check, color: Colors.green),
                 title: const Text('English (US)'),
-                trailing: const Icon(Icons.check, color: Colors.green),
                 onTap: () {
                   Navigator.pop(context);
                 },

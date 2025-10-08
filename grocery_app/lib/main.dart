@@ -11,7 +11,6 @@ import 'package:grocery_app/services/auth_services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Load theme preference
   final isDarkMode = await AuthService.getThemePreference();
   
   runApp(MyApp(isDarkMode: isDarkMode));
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..setTheme(isDarkMode)),
-        ChangeNotifierProvider(create: (_) => FavoritesProvider()), // Add this
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()), 
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
