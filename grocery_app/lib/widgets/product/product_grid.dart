@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/data/product_data.dart'; 
-import 'package:grocery_app/widgets/product_card.dart';
-import '../utils/responsive_utils.dart';
+import 'package:grocery_app/widgets/product/product_card.dart';
+import '../../utils/responsive_utils.dart';
 
 class ProductGrid extends StatelessWidget {
   final String category;

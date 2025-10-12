@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
-import 'package:grocery_app/widgets/cart_item_widget.dart';
+import 'package:grocery_app/widgets/product/cart_item_widget.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 
 class CartScreen extends StatelessWidget {

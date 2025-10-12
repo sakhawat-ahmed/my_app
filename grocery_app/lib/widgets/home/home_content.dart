@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/models/user_model.dart';
-import 'package:grocery_app/widgets/category_list.dart';
-import 'package:grocery_app/widgets/product_grid.dart';
+import 'package:grocery_app/widgets/product/category_list.dart';
+import 'package:grocery_app/widgets/product/product_grid.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:grocery_app/providers/theme_provider.dart';

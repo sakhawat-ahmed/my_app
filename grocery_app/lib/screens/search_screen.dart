@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/models/product.dart';
-import 'package:grocery_app/widgets/product_card.dart';
+import 'package:grocery_app/widgets/product/product_card.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/providers/theme_provider.dart';
 import 'package:grocery_app/data/product_data.dart';
