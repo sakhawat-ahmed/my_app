@@ -51,11 +51,11 @@ class NotificationSetting {
 class NotificationFrequency {
   final String id;
   final String label;
-  final bool isSelected;
+  bool isSelected;
 
-  const NotificationFrequency({
+   NotificationFrequency({
     required this.id,
     required this.label,
-    required this.isSelected,
+     required this.isSelected,
   });
 }
