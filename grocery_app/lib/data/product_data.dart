@@ -2,8 +2,7 @@ import 'package:grocery_app/models/product.dart';
 
 class ProductData {
   static final List<Product> products = [
-    Product(
-      id: 1,
+    const Product(
       name: 'Organic Bananas',
       description: 'Fresh organic bananas from Ecuador',
       price: 2.99,
@@ -11,10 +10,10 @@ class ProductData {
       category: 'Fruits',
       rating: 4.5,
       reviewCount: 128,
-      unit: 'bunch',
+      unit: 'bunch', id: '1',
     ),
-    Product(
-      id: 2,
+    const Product(
+      id: '2',
       name: 'Red Apples',
       description: 'Sweet and crunchy red apples',
       price: 3.49,
@@ -24,8 +23,8 @@ class ProductData {
       reviewCount: 95,
       unit: 'kg',
     ),
-    Product(
-      id: 3,
+    const Product(
+      id: '3',
       name: 'Fresh Milk',
       description: 'Organic whole milk',
       price: 4.99,
@@ -35,8 +34,8 @@ class ProductData {
       reviewCount: 203,
       unit: 'liter',
     ),
-    Product(
-      id: 4,
+    const Product(
+      id: '4',
       name: 'Whole Wheat Bread',
       description: 'Freshly baked whole wheat bread',
       price: 2.49,
@@ -46,8 +45,8 @@ class ProductData {
       reviewCount: 87,
       unit: 'loaf',
     ),
-    Product(
-      id: 5,
+    const Product(
+      id: '5',
       name: 'Eggs',
       description: 'Farm fresh organic eggs',
       price: 5.99,
@@ -57,8 +56,8 @@ class ProductData {
       reviewCount: 156,
       unit: 'dozen',
     ),
-    Product(
-      id: 6,
+    const Product(
+      id: '6',
       name: 'Organic Avocado',
       description: 'Fresh Hass avocados',
       price: 1.99,
