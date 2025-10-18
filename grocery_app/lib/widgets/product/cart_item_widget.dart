@@ -26,7 +26,7 @@ class CartItemWidget extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (direction) {
-        cartProvider.removeItem(item.product.id);
+        cartProvider.removeItem(item.product.id as int);
       },
       child: Container(
         margin: EdgeInsets.symmetric(
@@ -93,9 +93,9 @@ class CartItemWidget extends StatelessWidget {
                       constraints: const BoxConstraints(),
                       onPressed: () {
                         if (item.quantity > 1) {
-                          cartProvider.updateQuantity(item.product.id, item.quantity - 1);
+                          cartProvider.updateQuantity(item.product.id as int, item.quantity - 1);
                         } else {
-                          cartProvider.removeItem(item.product.id);
+                          cartProvider.removeItem(item.product.id as int);
                         }
                       },
                     ),
@@ -123,7 +123,7 @@ class CartItemWidget extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       onPressed: () {
-                        cartProvider.updateQuantity(item.product.id, item.quantity + 1);
+                        cartProvider.updateQuantity(item.product.id as int, item.quantity + 1);
                       },
                     ),
                   ],

@@ -51,18 +51,10 @@ class CartProvider with ChangeNotifier {
   }
 
   int getQuantity(int productId) {
-    final item = _items.firstWhere(
-      (item) => item.product.id == productId,
-      orElse: () => CartItem(product: Product(
-        id: -1, 
-        name: '', 
-        description: '', 
-        price: 0, 
-        imageUrl: '', 
-        category: '', 
-        unit: ''
-      )),
-    );
-    return item.quantity;
+    final index = _items.indexWhere((item) => item.product.id == productId);
+    if (index >= 0) {
+      return _items[index].quantity;
+    }
+    return 0;
   }
 }

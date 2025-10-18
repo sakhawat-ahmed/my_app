@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../utils/responsive_utils.dart';
-import '../../providers/theme_provider.dart';
+import 'package:grocery_app/utils/responsive_utils.dart';
+import 'package:grocery_app/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {

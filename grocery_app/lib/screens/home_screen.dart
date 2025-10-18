@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:grocery_app/models/user_model.dart';
 import 'package:grocery_app/screens/cart_screen.dart';
 import 'package:grocery_app/screens/profile_screen.dart';
 import 'package:grocery_app/screens/favorites_screen.dart';
-import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/screens/search_screen.dart';
 import 'package:grocery_app/widgets/home/home_app_bar.dart';
 import 'package:grocery_app/widgets/home/home_drawer.dart';
 import 'package:grocery_app/widgets/home/home_content.dart';
 import 'package:grocery_app/widgets/home/home_bottom_nav.dart';
-import 'package:grocery_app/utils/responsive_utils.dart';
-import 'package:grocery_app/providers/cart_provider.dart';
-import 'package:grocery_app/providers/favorites_provider.dart';
-import 'package:grocery_app/providers/theme_provider.dart';
 import 'package:grocery_app/services/auth_services.dart';
 
 class HomeScreen extends StatefulWidget {
