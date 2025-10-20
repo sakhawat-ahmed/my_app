@@ -34,20 +34,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Grocery App',
             theme: themeProvider.currentTheme,
-            home: FutureBuilder(
-              future: AuthService.getCurrentUser(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SplashScreen();
-                } else {
-                  if (snapshot.hasData && snapshot.data != null) {
-                    return const HomeScreen();
-                  } else {
-                    return const LoginScreen();
-                  }
-                }
-              },
-            ),
+            home: const AppInitializer(),
             routes: {
               '/home': (context) => const HomeScreen(),
               '/login': (context) => const LoginScreen(),
@@ -56,6 +43,52 @@ class MyApp extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  late Future<bool> _authCheckFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _authCheckFuture = _checkAuthStatus();
+  }
+
+  Future<bool> _checkAuthStatus() async {
+    // Add a minimum splash screen duration for better UX
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    final currentUser = await AuthService.getCurrentUser();
+    return currentUser != null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _authCheckFuture,
+      builder: (context, snapshot) {
+        // Always show splash screen while checking auth status
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SplashScreen();
+        }
+
+        // If we have the result, navigate to appropriate screen
+        if (snapshot.hasData) {
+          return snapshot.data! ? const HomeScreen() : const LoginScreen();
+        }
+
+        // If there's an error, fall back to login screen
+        return const LoginScreen();
+      },
     );
   }
 }
