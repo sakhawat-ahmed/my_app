@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:grocery_app/models/help_support_model.dart';
+import 'package:grocery_app/services/url_launcher_service.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
+import 'package:grocery_app/widgets/help_support_widgets.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
@@ -21,62 +23,21 @@ class HelpSupportScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // FAQ Section
-            _buildSectionTitle('Frequently Asked Questions'),
-            _buildFAQItem(
-              'How do I place an order?',
-              'Browse products, add to cart, and proceed to checkout. You can choose delivery or pickup options.',
-            ),
-            _buildFAQItem(
-              'What payment methods are accepted?',
-              'We accept credit/debit cards, digital wallets, and cash on delivery.',
-            ),
-            _buildFAQItem(
-              'How can I track my order?',
-              'Go to My Orders section to track your order in real-time.',
-            ),
-            _buildFAQItem(
-              'What is your return policy?',
-              'We accept returns within 7 days for damaged or incorrect items.',
+            const SectionTitle(title: 'Frequently Asked Questions'),
+            ...HelpSupportData.faqItems.map(
+              (faq) => FAQItemWidget(faqItem: faq),
             ),
 
             const SizedBox(height: 24),
 
             // Contact Support
-            _buildSectionTitle('Contact Support'),
+            const SectionTitle(title: 'Contact Support'),
             Card(
               elevation: 2,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
-                  children: [
-                    _buildContactOption(
-                      Icons.phone,
-                      'Call Us',
-                      '+1 (555) 123-4567',
-                      () => _launchURL('tel:+15551234567'),
-                    ),
-                    const Divider(),
-                    _buildContactOption(
-                      Icons.email,
-                      'Email Us',
-                      'support@grocerystore.com',
-                      () => _launchURL('mailto:support@grocerystore.com'),
-                    ),
-                    const Divider(),
-                    _buildContactOption(
-                      Icons.chat,
-                      'Live Chat',
-                      'Available 24/7',
-                      () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Live chat feature coming soon!'),
-                            backgroundColor: Colors.orange,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                  children: _buildContactOptions(context),
                 ),
               ),
             ),
@@ -84,7 +45,7 @@ class HelpSupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Store Information
-            _buildSectionTitle('Store Information'),
+            const SectionTitle(title: 'Store Information'),
             Card(
               elevation: 2,
               child: Padding(
@@ -92,11 +53,12 @@ class HelpSupportScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildStoreInfoItem(Icons.access_time, 'Opening Hours', 'Mon-Sun: 6:00 AM - 11:00 PM'),
-                    const SizedBox(height: 12),
-                    _buildStoreInfoItem(Icons.location_on, 'Address', '123 Grocery Street, City, State 12345'),
-                    const SizedBox(height: 12),
-                    _buildStoreInfoItem(Icons.directions_car, 'Delivery Radius', 'Up to 10 miles from store location'),
+                    ...HelpSupportData.storeInfo.map(
+                      (info) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: StoreInfoWidget(storeInfo: info),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -105,18 +67,16 @@ class HelpSupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Quick Guides
-            _buildSectionTitle('Quick Guides'),
+            const SectionTitle(title: 'Quick Guides'),
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: [
-                _buildGuideChip('How to use coupons', () {}),
-                _buildGuideChip('Delivery instructions', () {}),
-                _buildGuideChip('Account setup', () {}),
-                _buildGuideChip('Payment troubleshooting', () {}),
-                _buildGuideChip('Order cancellation', () {}),
-                _buildGuideChip('Refund process', () {}),
-              ],
+              children: HelpSupportData.quickGuides.map(
+                (guide) => QuickGuideChip(
+                  guide: guide,
+                  onTap: () => _onQuickGuideTap(context, guide),
+                ),
+              ).toList(),
             ),
           ],
         ),
@@ -124,99 +84,52 @@ class HelpSupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.green,
+  List<Widget> _buildContactOptions(BuildContext context) {
+    final widgets = <Widget>[];
+    
+    for (int i = 0; i < HelpSupportData.contactOptions.length; i++) {
+      final option = HelpSupportData.contactOptions[i];
+      widgets.add(
+        ContactOptionWidget(
+          contactOption: option,
+          onTap: () => _onContactOptionTap(context, option),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFAQItem(String question, String answer) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ExpansionTile(
-        title: Text(
-          question,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              answer,
-              style: TextStyle(
-                color: Colors.grey[700],
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactOption(IconData icon, String title, String subtitle, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.green),
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildStoreInfoItem(IconData icon, String title, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, color: Colors.green, size: 20),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  color: Colors.grey[700],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGuideChip(String title, VoidCallback onTap) {
-    return ActionChip(
-      label: Text(title),
-      onPressed: onTap,
-      backgroundColor: Colors.green[50],
-      labelStyle: const TextStyle(color: Colors.green),
-    );
-  }
-
-  Future<void> _launchURL(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      );
+      
+      if (i < HelpSupportData.contactOptions.length - 1) {
+        widgets.add(const Divider());
+      }
     }
+    
+    return widgets;
+  }
+
+  void _onContactOptionTap(BuildContext context, ContactOption option) {
+    switch (option.type) {
+      case ContactType.phone:
+        UrlLauncherService.launchPhone(option.value);
+        break;
+      case ContactType.email:
+        UrlLauncherService.launchEmail(option.value);
+        break;
+      case ContactType.liveChat:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Live chat feature coming soon!'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        break;
+    }
+  }
+
+  void _onQuickGuideTap(BuildContext context, QuickGuide guide) {
+    // Handle quick guide tap - you can navigate to a detail screen
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Opening: ${guide.title}'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 }
