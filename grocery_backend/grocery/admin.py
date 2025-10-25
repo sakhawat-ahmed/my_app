@@ -1,7 +1,6 @@
-# grocery/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import *
+from .models import User, Category, Product
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -24,20 +23,8 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'vendor', 'price', 'stock_quantity', 'is_available')
-    list_filter = ('category', 'vendor', 'is_available', 'is_featured')
+    list_filter = ('category', 'is_available', 'is_featured')
     search_fields = ('name', 'sku')
     readonly_fields = ('sku',)
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_number', 'user', 'status', 'payment_status', 'grand_total', 'created_at')
-    list_filter = ('status', 'payment_status', 'created_at')
-    readonly_fields = ('order_number',)
-
-admin.site.register(ProductImage)
-admin.site.register(Address)
-admin.site.register(Cart)
-admin.site.register(OrderItem)
-admin.site.register(Review)
-admin.site.register(Wishlist)
-admin.site.register(Coupon)
+# We'll add other models to admin later as we create them
