@@ -96,22 +96,22 @@ class NotificationData {
   ];
 
   static List<NotificationFrequency> get frequencyOptions => [
-    const NotificationFrequency(
+     NotificationFrequency(
       id: 'daily',
       label: 'Daily',
       isSelected: false,
     ),
-    const NotificationFrequency(
+     NotificationFrequency(
       id: 'weekly',
       label: 'Weekly',
       isSelected: true,
     ),
-    const NotificationFrequency(
+     NotificationFrequency(
       id: 'monthly',
       label: 'Monthly',
       isSelected: false,
     ),
-    const NotificationFrequency(
+     NotificationFrequency(
       id: 'never',
       label: 'Never',
       isSelected: false,
