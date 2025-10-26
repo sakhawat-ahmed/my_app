@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/services/auth_services.dart';
+import 'package:grocery_app/services/api_service.dart'; 
 import 'package:grocery_app/utils/responsive_utils.dart';
 import 'package:grocery_app/screens/register_screen.dart';
 import 'package:grocery_app/screens/home_screen.dart';
@@ -13,14 +13,15 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController(); 
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  String? _errorMessage;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -29,15 +30,17 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
+        _errorMessage = null;
       });
 
       try {
-        final user = await AuthService.login(
-          _emailController.text.trim(),
+        // Use the new ApiService instead of AuthService
+        final result = await ApiService.login(
+          _usernameController.text.trim(),
           _passwordController.text.trim(),
         );
 
-        if (user != null) {
+        if (result['success'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Login successful!'),
@@ -51,20 +54,26 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         } else {
+          setState(() {
+            _errorMessage = result['error'];
+          });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Invalid email or password'),
+            SnackBar(
+              content: Text(_errorMessage ?? 'Login failed'),
               backgroundColor: Colors.red,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 3),
             ),
           );
         }
       } catch (e) {
+        setState(() {
+          _errorMessage = 'Network error: Please check your connection';
+        });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('An error occurred. Please try again.'),
+          SnackBar(
+            content: Text(_errorMessage ?? 'An error occurred. Please try again.'),
             backgroundColor: Colors.red,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 3),
           ),
         );
       } finally {
@@ -90,12 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
               _buildHeader(),
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 40, tablet: 60, desktop: 80)),
 
+              // Error Message
+              if (_errorMessage != null) _buildErrorWidget(),
+              
               // Login Form
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    _buildEmailField(),
+                    _buildUsernameField(), // Changed from email to username
                     SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 24, desktop: 28)),
                     _buildPasswordField(),
                     SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32)),
@@ -143,21 +155,52 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildErrorWidget() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(ResponsiveUtils.responsiveSize(context, mobile: 12, tablet: 14, desktop: 16)),
+      margin: EdgeInsets.only(bottom: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
+      decoration: BoxDecoration(
+        color: Colors.red[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.red[200]!),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline, color: Colors.red[700], size: 20),
+          SizedBox(width: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 10, desktop: 12)),
+          Expanded(
+            child: Text(
+              _errorMessage!,
+              style: TextStyle(
+                color: Colors.red[700],
+                fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 15, desktop: 16),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUsernameField() {
     return TextFormField(
-      controller: _emailController,
-      keyboardType: TextInputType.emailAddress,
+      controller: _usernameController,
+      keyboardType: TextInputType.text,
       decoration: InputDecoration(
-        labelText: 'Email Address',
-        prefixIcon: const Icon(Icons.email, color: Colors.green),
+        labelText: 'Username',
+        hintText: 'Enter your username',
+        prefixIcon: const Icon(Icons.person, color: Colors.green),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        filled: true,
+        fillColor: Colors.grey[50],
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter your email';
+          return 'Please enter your username';
         }
-        if (!value.contains('@')) {
-          return 'Please enter a valid email';
+        if (value.length < 3) {
+          return 'Username must be at least 3 characters';
         }
         return null;
       },
@@ -170,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: _obscurePassword,
       decoration: InputDecoration(
         labelText: 'Password',
+        hintText: 'Enter your password',
         prefixIcon: const Icon(Icons.lock, color: Colors.green),
         suffixIcon: IconButton(
           icon: Icon(
@@ -183,6 +227,8 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        filled: true,
+        fillColor: Colors.grey[50],
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -203,13 +249,22 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: _isLoading ? null : _login,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
           padding: EdgeInsets.symmetric(
             vertical: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
         ),
         child: _isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
+            ? SizedBox(
+                height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 22, desktop: 24),
+                width: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 22, desktop: 24),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
             : Text(
                 'Login',
                 style: TextStyle(
@@ -229,21 +284,25 @@ class _LoginScreenState extends State<LoginScreen> {
           "Don't have an account? ",
           style: TextStyle(
             fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
+            color: Colors.grey[600],
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RegisterScreen()),
-            );
-          },
+          onTap: _isLoading
+              ? null
+              : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                  );
+                },
           child: Text(
             'Register',
             style: TextStyle(
               fontSize: ResponsiveUtils.responsiveSize(context, mobile: 14, tablet: 16, desktop: 18),
               color: Colors.green,
               fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
             ),
           ),
         ),
