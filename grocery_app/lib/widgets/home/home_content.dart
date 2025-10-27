@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:grocery_app/models/user_model.dart';
 import 'package:grocery_app/widgets/product/category_list.dart';
 import 'package:grocery_app/widgets/product/product_grid.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
@@ -9,14 +8,18 @@ import 'package:grocery_app/providers/theme_provider.dart';
 
 class HomeContent extends StatelessWidget {
   final String selectedCategory;
-  final User? user;
+  final Map<String, dynamic>? user;
+  final Map<String, dynamic>? homeData;
   final Function(String) onCategorySelected;
+  final VoidCallback? onRefresh;
 
   const HomeContent({
     super.key,
     required this.selectedCategory,
     required this.user,
     required this.onCategorySelected,
+    this.homeData,
+    this.onRefresh,
   });
 
   @override
@@ -38,6 +41,7 @@ class HomeContent extends StatelessWidget {
           CategoryList(
             selectedCategory: selectedCategory,
             onCategorySelected: onCategorySelected,
+            categories: homeData?['categories'] ?? [],
           ),
           
           // Products Title with results count
@@ -45,7 +49,10 @@ class HomeContent extends StatelessWidget {
           
           // Products Grid
           Expanded(
-            child: ProductGrid(category: selectedCategory),
+            child: ProductGrid(
+              category: selectedCategory,
+              products: homeData?['featured_products'] ?? [],
+            ),
           ),
         ],
       ),
@@ -65,7 +72,7 @@ class HomeContent extends StatelessWidget {
         children: [
           Text(
             user != null 
-              ? 'Hello, ${user!.name}!'
+              ? 'Hello, ${user!['username'] ?? 'User'}!'
               : 'Hello, Welcome!',
             style: TextStyle(
               fontSize: ResponsiveUtils.responsiveSize(context, mobile: 18, tablet: 20, desktop: 22),
