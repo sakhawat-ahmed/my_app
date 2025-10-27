@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/models/user_model.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final User? user;
+  final Map<String, dynamic>? user;
+  final VoidCallback? onLogout;
 
   const HomeAppBar({
     super.key,
     required this.user,
+    this.onLogout,
   });
 
   @override
@@ -27,6 +28,14 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 1,
       iconTheme: const IconThemeData(color: Colors.black),
+      actions: [
+        if (onLogout != null)
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: onLogout,
+            tooltip: 'Logout',
+          ),
+      ],
     );
   }
 }
