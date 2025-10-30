@@ -1,10 +1,55 @@
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from .models import Category, Product, User
+from .serializers import CategorySerializer, ProductSerializer, UserProfileSerializer, UserRegistrationSerializer
+
+class AuthViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
+    def register(self, request):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'user': UserProfileSerializer(user).data,
+                'token': token.key,
+                'message': 'User registered successfully'
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
+    def login(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        user = authenticate(username=username, password=password)
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'user': UserProfileSerializer(user).data,
+                'token': token.key,
+                'message': 'Login successful'
+            })
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+@permission_classes([permissions.IsAuthenticated])
+def update_user_profile(request):
+    user = request.user
+    serializer = UserProfileSerializer(user, data=request.data, partial=True)
+    
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'user': UserProfileSerializer(user).data,
+            'message': 'Profile updated successfully'
+        })
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.filter(is_active=True)
