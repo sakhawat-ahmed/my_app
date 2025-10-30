@@ -20,7 +20,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -53,9 +54,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (_currentUser != null) {
         setState(() {
-          _nameController.text = _currentUser!['first_name']?.isNotEmpty == true 
-              ? '${_currentUser!['first_name']} ${_currentUser!['last_name'] ?? ''}'.trim()
-              : _currentUser!['username'] ?? '';
+          _firstNameController.text = _currentUser!['first_name'] ?? '';
+          _lastNameController.text = _currentUser!['last_name'] ?? '';
           _emailController.text = _currentUser!['email'] ?? '';
           _phoneController.text = _currentUser!['phone'] ?? '';
           _isLoading = false;
@@ -69,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _isLoading = false;
       });
-      _showErrorSnackBar('Failed to load user data');
+      _showErrorSnackBar('Failed to load user data: $e');
     }
   }
 
@@ -80,21 +80,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
 
       try {
-        // Note: For now, we'll just show a success message
-        // In a real app, you'd call an API endpoint to update the user
-        await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+        // Prepare user data for API call
+        final userData = {
+          'first_name': _firstNameController.text.trim(),
+          'last_name': _lastNameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'phone': _phoneController.text.trim(),
+        };
 
-        setState(() {
-          _isEditing = false;
-          _isLoading = false;
-        });
-        
-        _showSuccessSnackBar('Profile updated successfully');
+        // Remove empty fields
+        userData.removeWhere((key, value) => value.isEmpty);
+
+        final result = await ApiService.updateUserProfile(userData);
+
+        if (result['success'] == true) {
+          // Update local user data
+          _currentUser = {
+            ..._currentUser!,
+            ...userData,
+          };
+          
+          setState(() {
+            _isEditing = false;
+            _isLoading = false;
+          });
+          
+          _showSuccessSnackBar(result['data']['message'] ?? 'Profile updated successfully');
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+          _showErrorSnackBar(result['error'] ?? 'Failed to update profile');
+        }
       } catch (e) {
         setState(() {
           _isLoading = false;
         });
-        _showErrorSnackBar('Failed to update profile');
+        _showErrorSnackBar('Error updating profile: $e');
       }
     }
   }
@@ -111,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       
       _showSuccessSnackBar('Logged out successfully');
     } catch (e) {
-      _showErrorSnackBar('Error logging out');
+      _showErrorSnackBar('Error logging out: $e');
     }
   }
 
@@ -206,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -216,17 +238,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _addressController.dispose();
     super.dispose();
   }
 
@@ -296,13 +318,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Personal Information
                   _buildSectionTitle('Personal Information'),
                   SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-                  PersonalInfoForm(
-                    isEditing: _isEditing,
-                    nameController: _nameController,
-                    emailController: _emailController,
-                    phoneController: _phoneController,
-                    addressController: _addressController,
-                  ),
+               // In your ProfileScreen build method, update the PersonalInfoForm:
+PersonalInfoForm(
+  isEditing: _isEditing,
+  firstNameController: _firstNameController,
+  lastNameController: _lastNameController,
+  emailController: _emailController,
+  phoneController: _phoneController,
+  addressController: _addressController,
+  user: _currentUser, 
+),
 
                   // Preferences
                   SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 40, desktop: 48)),
@@ -340,7 +365,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 32, tablet: 40, desktop: 48)),
                     SaveButton(
                       onPressed: _saveProfile,
-                      isLoading: _isLoading,
                     ),
                   ],
 
