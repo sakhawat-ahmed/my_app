@@ -16,8 +16,9 @@ develop-eggs/
 dist/
 downloads/
 eggs/
+services/
+django_env/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/

@@ -64,7 +64,6 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 
   Future<bool> _checkAuthStatus() async {
-    // Add a minimum splash screen duration for better UX
     await Future.delayed(const Duration(milliseconds: 1500));
     
     final currentUser = await AuthService.getCurrentUser();

@@ -25,7 +25,7 @@ class ProductCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        print('Product tapped: ${product.name}'); // Debug print
+        print('Product tapped: ${product.name}'); 
         Navigator.push(
           context,
           MaterialPageRoute(
