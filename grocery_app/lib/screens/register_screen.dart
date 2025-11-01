@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/services/auth_services.dart';
+import 'package:grocery_app/services/api_service.dart';
+import 'package:grocery_app/widgets/register/register_header.dart';
+import 'package:grocery_app/widgets/register/register_form.dart';
+import 'package:grocery_app/widgets/register/register_button.dart';
 import 'package:grocery_app/utils/responsive_utils.dart';
-import 'package:grocery_app/models/user_model.dart';
 import 'package:grocery_app/screens/login_screen.dart';
-import 'package:uuid/uuid.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,25 +15,29 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _addressController = TextEditingController();
   
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  String? _errorMessage;
+  String _selectedUserType = 'customer';
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _usernameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _addressController.dispose();
     super.dispose();
   }
 
@@ -40,27 +45,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
+        _errorMessage = null;
       });
 
       try {
-        final user = User(
-          id: const Uuid().v4(),
-          name: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          phone: _phoneController.text.trim(),
-          password: _passwordController.text.trim(),
-          address: _addressController.text.trim(),
-          createdAt: DateTime.now(),
+        // Prepare user data for registration
+        final userData = {
+          'username': _usernameController.text.trim(),
+          'password': _passwordController.text.trim(),
+          'email': _emailController.text.trim(),
+          'user_type': _selectedUserType,
+          'first_name': _firstNameController.text.trim(),
+          'last_name': _lastNameController.text.trim(),
+          'phone': _phoneController.text.trim(),
+        };
+
+        // Remove empty fields
+        userData.removeWhere((key, value) => value.isEmpty);
+
+        final result = await ApiService.register(
+          _usernameController.text.trim(),
+          _passwordController.text.trim(),
+          _emailController.text.trim(),
+          _selectedUserType,
         );
 
-        final success = await AuthService.register(user);
-
-        if (success) {
+        if (result['success'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registration successful! Please login.'),
+            SnackBar(
+              content: Text(result['data']['message'] ?? 'Registration successful!'),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 3),
+              duration: const Duration(seconds: 3),
             ),
           );
           
@@ -69,20 +84,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
             MaterialPageRoute(builder: (context) => const LoginScreen()),
           );
         } else {
+          setState(() {
+            _errorMessage = result['error'];
+          });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Email or phone number already exists'),
+            SnackBar(
+              content: Text(_errorMessage ?? 'Registration failed'),
               backgroundColor: Colors.red,
-              duration: Duration(seconds: 3),
+              duration: const Duration(seconds: 3),
             ),
           );
         }
       } catch (e) {
+        setState(() {
+          _errorMessage = 'Network error: Please check your connection';
+        });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('An error occurred. Please try again.'),
+          SnackBar(
+            content: Text(_errorMessage ?? 'An error occurred. Please try again.'),
             backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
       } finally {
@@ -91,6 +112,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       }
     }
+  }
+
+  void _navigateToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
   }
 
   @override
@@ -102,9 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: const Text('Create Account'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
@@ -114,29 +140,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               // Header
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
-              _buildHeader(),
+              RegisterHeader(),
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
 
               // Registration Form
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    _buildNameField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-                    _buildEmailField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-                    _buildPhoneField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-                    _buildPasswordField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-                    _buildConfirmPasswordField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-                    _buildAddressField(),
-                    SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32)),
-                    _buildRegisterButton(),
-                  ],
-                ),
+              RegisterForm(
+                formKey: _formKey,
+                usernameController: _usernameController,
+                firstNameController: _firstNameController,
+                lastNameController: _lastNameController,
+                emailController: _emailController,
+                phoneController: _phoneController,
+                passwordController: _passwordController,
+                confirmPasswordController: _confirmPasswordController,
+                obscurePassword: _obscurePassword,
+                obscureConfirmPassword: _obscureConfirmPassword,
+                selectedUserType: _selectedUserType,
+                onUserTypeChanged: (value) {
+                  setState(() {
+                    _selectedUserType = value;
+                  });
+                },
+                onPasswordVisibilityChanged: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+                onConfirmPasswordVisibilityChanged: () {
+                  setState(() {
+                    _obscureConfirmPassword = !_obscureConfirmPassword;
+                  });
+                },
+                errorMessage: _errorMessage,
+              ),
+
+              // Register Button
+              SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32)),
+              RegisterButton(
+                isLoading: _isLoading,
+                onPressed: _register,
               ),
 
               // Login Link
@@ -145,195 +187,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Column(
-      children: [
-        Icon(
-          Icons.person_add,
-          size: ResponsiveUtils.responsiveSize(context, mobile: 60, tablet: 80, desktop: 100),
-          color: Colors.green,
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 20, desktop: 24)),
-        Text(
-          'Create Account',
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 24, tablet: 28, desktop: 32),
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
-          ),
-        ),
-        SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 8, tablet: 12, desktop: 16)),
-        Text(
-          'Join us and start shopping',
-          style: TextStyle(
-            fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-            color: Colors.grey[600],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNameField() {
-    return TextFormField(
-      controller: _nameController,
-      decoration: InputDecoration(
-        labelText: 'Full Name',
-        prefixIcon: const Icon(Icons.person, color: Colors.green),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your name';
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildEmailField() {
-    return TextFormField(
-      controller: _emailController,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        labelText: 'Email Address',
-        prefixIcon: const Icon(Icons.email, color: Colors.green),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your email';
-        }
-        if (!value.contains('@')) {
-          return 'Please enter a valid email';
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildPhoneField() {
-    return TextFormField(
-      controller: _phoneController,
-      keyboardType: TextInputType.phone,
-      decoration: InputDecoration(
-        labelText: 'Phone Number',
-        prefixIcon: const Icon(Icons.phone, color: Colors.green),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your phone number';
-        }
-        if (value.length < 10) {
-          return 'Please enter a valid phone number';
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return TextFormField(
-      controller: _passwordController,
-      obscureText: _obscurePassword,
-      decoration: InputDecoration(
-        labelText: 'Password',
-        prefixIcon: const Icon(Icons.lock, color: Colors.green),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword ? Icons.visibility : Icons.visibility_off,
-            color: Colors.grey,
-          ),
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your password';
-        }
-        if (value.length < 6) {
-          return 'Password must be at least 6 characters';
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildConfirmPasswordField() {
-    return TextFormField(
-      controller: _confirmPasswordController,
-      obscureText: _obscureConfirmPassword,
-      decoration: InputDecoration(
-        labelText: 'Confirm Password',
-        prefixIcon: const Icon(Icons.lock_outline, color: Colors.green),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
-            color: Colors.grey,
-          ),
-          onPressed: () {
-            setState(() {
-              _obscureConfirmPassword = !_obscureConfirmPassword;
-            });
-          },
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please confirm your password';
-        }
-        if (value != _passwordController.text) {
-          return 'Passwords do not match';
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildAddressField() {
-    return TextFormField(
-      controller: _addressController,
-      decoration: InputDecoration(
-        labelText: 'Address (Optional)',
-        prefixIcon: const Icon(Icons.location_on, color: Colors.green),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      maxLines: 2,
-    );
-  }
-
-  Widget _buildRegisterButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _register,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-          padding: EdgeInsets.symmetric(
-            vertical: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-          ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        child: _isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Text(
-                'Register',
-                style: TextStyle(
-                  fontSize: ResponsiveUtils.responsiveSize(context, mobile: 16, tablet: 18, desktop: 20),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
       ),
     );
   }
@@ -349,12 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
-          },
+          onTap: _navigateToLogin,
           child: Text(
             'Login',
             style: TextStyle(
@@ -364,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
-  ],
+      ],
     );
   }
 }
