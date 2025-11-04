@@ -173,7 +173,7 @@ class AuthService {
   // ==================== UNIFIED AUTH METHODS ====================
 
   // Register new user
-  static Future<Map<String, dynamic>> register(User user) async {
+  static Future<Map<String, dynamic>> register(User user, String password, String email, String userType) async {
     try {
       // Try backend first if enabled
       if (_useBackend) {
@@ -470,4 +470,6 @@ class AuthService {
   static String getBaseUrl() {
     return baseUrl;
   }
+
+  static Future updateUserProfile(Map<String, dynamic> userData) async {}
 }

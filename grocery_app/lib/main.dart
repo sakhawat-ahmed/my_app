@@ -1,10 +1,12 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:grocery_app/screens/home_screen.dart';
 import 'package:grocery_app/screens/login_screen.dart';
 import 'package:grocery_app/screens/splash_screen.dart';
 import 'package:grocery_app/providers/cart_provider.dart';
 import 'package:grocery_app/providers/theme_provider.dart';
-import 'package:grocery_app/providers/favorites_provider.dart'; 
+import 'package:grocery_app/providers/favorites_provider.dart';
+import 'package:grocery_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/services/auth_services.dart';
 
@@ -27,7 +29,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..setTheme(isDarkMode)),
-        ChangeNotifierProvider(create: (_) => FavoritesProvider()), 
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
@@ -64,10 +67,16 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 
   Future<bool> _checkAuthStatus() async {
+    // Initialize theme provider
+    await Provider.of<ThemeProvider>(context, listen: false).init();
+    
+    // Load user data if logged in
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    await userProvider.loadUser();
+    
     await Future.delayed(const Duration(milliseconds: 1500));
     
-    final currentUser = await AuthService.getCurrentUser();
-    return currentUser != null;
+    return userProvider.isLoggedIn;
   }
 
   @override
