@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('grocery.urls')),  # This includes the grocery app URLs
+    path('api/', include('grocery.urls')),  
 ]
 
 # Serve media files in development

@@ -37,7 +37,7 @@ class AuthService {
           'email': user.email,
           'password': user.password,
           'phone': user.phone,
-          'user_type': 'customer', // Default user type
+          'user_type': 'customer', 
         }),
       );
 

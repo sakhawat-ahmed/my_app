@@ -13,6 +13,7 @@ import 'package:grocery_app/services/auth_services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Get theme preference before running app
   final isDarkMode = await AuthService.getThemePreference();
   
   runApp(MyApp(isDarkMode: isDarkMode));
@@ -28,7 +29,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()..setTheme(isDarkMode)),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider()..setThemeWithoutPrefs(isDarkMode),
+        ),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
@@ -67,16 +70,21 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 
   Future<bool> _checkAuthStatus() async {
-    // Initialize theme provider
-    await Provider.of<ThemeProvider>(context, listen: false).init();
-    
-    // Load user data if logged in
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    await userProvider.loadUser();
-    
-    await Future.delayed(const Duration(milliseconds: 1500));
-    
-    return userProvider.isLoggedIn;
+    try {
+      // Initialize theme provider with SharedPreferences
+      await Provider.of<ThemeProvider>(context, listen: false).init();
+      
+      // Load user data if logged in
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      await userProvider.loadUser();
+      
+      await Future.delayed(const Duration(milliseconds: 1500));
+      
+      return userProvider.isLoggedIn;
+    } catch (e) {
+      print('Error during auth check: $e');
+      return false;
+    }
   }
 
   @override
