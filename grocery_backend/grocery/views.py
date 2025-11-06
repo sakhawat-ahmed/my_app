@@ -5,51 +5,150 @@ from rest_framework.views import APIView
 from django.db.models import Q
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .models import Category, Product, User
-from .serializers import CategorySerializer, ProductSerializer, UserProfileSerializer, UserRegistrationSerializer
+from .models import Category, Product, User, Cart
+from .serializers import (CategorySerializer, ProductSerializer, 
+                         UserProfileSerializer, UserRegistrationSerializer,
+                         SimpleProductSerializer, CartSerializer)
 
 class AuthViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def register(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            token, created = Token.objects.get_or_create(user=user)
+        try:
+            # Handle different password field names for compatibility
+            data = request.data.copy()
+            if 'password_confirm' in data and 'password2' not in data:
+                data['password2'] = data['password_confirm']
+            
+            serializer = UserRegistrationSerializer(data=data)
+            if serializer.is_valid():
+                user = serializer.save()
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'success': True,
+                    'user': UserProfileSerializer(user).data,
+                    'token': token.key,
+                    'message': 'User registered successfully'
+                }, status=status.HTTP_201_CREATED)
             return Response({
-                'user': UserProfileSerializer(user).data,
-                'token': token.key,
-                'message': 'User registered successfully'
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                'success': False,
+                'error': serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        
-        user = authenticate(username=username, password=password)
-        if user:
-            token, created = Token.objects.get_or_create(user=user)
+        try:
+            # Accept both username and email for login
+            username_or_email = request.data.get('username') or request.data.get('email')
+            password = request.data.get('password')
+            
+            if not username_or_email or not password:
+                return Response({
+                    'success': False,
+                    'error': 'Username/email and password are required'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Try to authenticate by username or email
+            try:
+                user = User.objects.get(
+                    Q(username=username_or_email) | Q(email=username_or_email)
+                )
+                user = authenticate(username=user.username, password=password)
+            except User.DoesNotExist:
+                user = None
+            
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'success': True,
+                    'user': UserProfileSerializer(user).data,
+                    'token': token.key,
+                    'message': 'Login successful'
+                })
             return Response({
-                'user': UserProfileSerializer(user).data,
-                'token': token.key,
-                'message': 'Login successful'
+                'success': False,
+                'error': 'Invalid credentials'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def logout(self, request):
+        try:
+            request.user.auth_token.delete()
+            return Response({
+                'success': True,
+                'message': 'Logged out successfully'
             })
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([permissions.IsAuthenticated])
 def update_user_profile(request):
-    user = request.user
-    serializer = UserProfileSerializer(user, data=request.data, partial=True)
-    
-    if serializer.is_valid():
-        serializer.save()
+    try:
+        user = request.user
+        serializer = UserProfileSerializer(user, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'success': True,
+                'user': UserProfileSerializer(user).data,
+                'message': 'Profile updated successfully'
+            })
         return Response({
-            'user': UserProfileSerializer(user).data,
-            'message': 'Profile updated successfully'
+            'success': False,
+            'error': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({
+            'success': False,
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def change_password(request):
+    try:
+        user = request.user
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        
+        if not current_password or not new_password:
+            return Response({
+                'success': False,
+                'error': 'Current password and new password are required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.check_password(current_password):
+            return Response({
+                'success': False,
+                'error': 'Current password is incorrect'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.set_password(new_password)
+        user.save()
+        
+        return Response({
+            'success': True,
+            'message': 'Password changed successfully'
         })
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({
+            'success': False,
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.filter(is_active=True)
@@ -79,25 +178,56 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         
         # Filter by featured
         featured = self.request.query_params.get('featured')
-        if featured:
+        if featured and featured.lower() == 'true':
             queryset = queryset.filter(is_featured=True)
         
         return queryset
+
+class CartViewSet(viewsets.ModelViewSet):
+    serializer_class = CartSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 # Home API View
 class HomeAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     
     def get(self, request):
-        # Featured products
-        featured_products = Product.objects.filter(is_featured=True, is_available=True)[:10]
-        
-        # Categories with products
-        categories = Category.objects.filter(is_active=True)[:8]
-        
-        data = {
-            'featured_products': ProductSerializer(featured_products, many=True).data,
-            'categories': CategorySerializer(categories, many=True).data,
-        }
-        
-        return Response(data)
+        try:
+            # Featured products
+            featured_products = Product.objects.filter(is_featured=True, is_available=True)[:10]
+            
+            # Categories with products
+            categories = Category.objects.filter(is_active=True)[:8]
+            
+            # New arrivals (recently added products)
+            new_arrivals = Product.objects.filter(is_available=True).order_by('-created_at')[:8]
+            
+            data = {
+                'success': True,
+                'featured_products': SimpleProductSerializer(featured_products, many=True).data,
+                'categories': CategorySerializer(categories, many=True).data,
+                'new_arrivals': SimpleProductSerializer(new_arrivals, many=True).data,
+            }
+            
+            return Response(data)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Health check view
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def health_check(request):
+    return Response({
+        'success': True,
+        'status': 'Backend is running!',
+        'message': 'Grocery API is working properly'
+    })

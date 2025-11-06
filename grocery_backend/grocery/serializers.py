@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
-from .models import Category, Product, User
+from .models import Category, Product, User, Cart
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -8,7 +8,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2', 'user_type', 'phone')
+        fields = ('username', 'email', 'password', 'password2', 'user_type', 'phone', 'first_name', 'last_name')
     
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -25,14 +25,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 
                  'user_type', 'phone', 'profile_picture', 'date_of_birth',
-                 'loyalty_points', 'store_name', 'store_description')
-        
-    def update(self, instance, validated_data):
-        # Handle partial updates
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        return instance
+                 'loyalty_points', 'store_name', 'store_description', 'date_joined')
+        read_only_fields = ('id', 'date_joined', 'user_type')
 
 class CategorySerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
@@ -46,8 +40,23 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
-    vendor_name = serializers.CharField(source='vendor.store_name', read_only=True)
+    vendor_name = serializers.CharField(source='vendor.username', read_only=True)
     
     class Meta:
         model = Product
         fields = '__all__'
+
+class SimpleProductSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'price', 'unit', 'unit_size', 'category_name', 'is_featured', 'image')
+
+class CartSerializer(serializers.ModelSerializer):
+    product = SimpleProductSerializer(read_only=True)
+    total_price = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = Cart
+        fields = ('id', 'product', 'quantity', 'total_price', 'added_at')
