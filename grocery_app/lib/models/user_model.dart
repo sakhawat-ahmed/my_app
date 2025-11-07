@@ -1,4 +1,3 @@
-// lib/models/user_model.dart
 class User {
   final String id;
   final String name;
@@ -20,25 +19,23 @@ class User {
     this.userType,
   });
 
-  // Factory constructor for creating User from Map (JSON)
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id']?.toString() ?? json['_id']?.toString() ?? '',
+      id: json['id']?.toString() ?? '',
       name: json['name'] ?? json['username'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
-      password: json['password'] ?? '',
-      profileImage: json['profile_image'],
-      userType: json['user_type'],
+      password: json['password'] ?? '', // Note: password won't be returned from backend after registration
+      profileImage: json['profile_image'] ?? json['profilePicture'],
+      userType: json['user_type'] ?? json['userType'] ?? 'customer',
       createdAt: json['created_at'] != null 
           ? DateTime.parse(json['created_at'])
-          : (json['createdAt'] != null 
-              ? DateTime.parse(json['createdAt'])
+          : (json['date_joined'] != null 
+              ? DateTime.parse(json['date_joined'])
               : DateTime.now()),
     );
   }
 
-  // Convert User to Map (JSON)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -52,13 +49,9 @@ class User {
     };
   }
 
-  // Alternative method name for compatibility
   factory User.fromMap(Map<String, dynamic> map) => User.fromJson(map);
-  
-  // Alternative method name for compatibility  
   Map<String, dynamic> toMap() => toJson();
 
-  // Simple method to create a new User with updated fields
   User copyWith({
     String? id,
     String? name,

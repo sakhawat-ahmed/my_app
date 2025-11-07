@@ -18,7 +18,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserData();
+    });
   }
 
   void _loadUserData() {
@@ -26,15 +28,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final user = userProvider.user;
     
     if (user != null) {
-      _nameController.text = user['username'] ?? '';
-      _emailController.text = user['email'] ?? '';
-      _phoneController.text = user['phone'] ?? '';
+      _nameController.text = user.name;
+      _emailController.text = user.email;
+      _phoneController.text = user.phone;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -57,11 +60,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.green[100],
-                      child: Icon(
-                        Icons.person,
-                        size: 40,
-                        color: Colors.green[600],
-                      ),
+                      backgroundImage: user?.profileImage != null
+                          ? NetworkImage(user!.profileImage!)
+                          : null,
+                      child: user?.profileImage == null
+                          ? Icon(
+                              Icons.person,
+                              size: 40,
+                              color: Colors.green[600],
+                            )
+                          : null,
                     ),
                     const SizedBox(height: 24),
                     TextFormField(
@@ -103,12 +111,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       keyboardType: TextInputType.phone,
                     ),
+                    if (userProvider.error != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(
+                          userProvider.error!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _saveProfile,
-                        child: const Text('Save Changes'),
+                        onPressed: userProvider.isLoading ? null : _saveProfile,
+                        child: userProvider.isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : const Text('Save Changes'),
                       ),
                     ),
                   ],
@@ -125,20 +153,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final userData = {
         'username': _nameController.text,
         'email': _emailController.text,
-        'phone': _phoneController.text.isNotEmpty ? _phoneController.text : null,
+        'phone': _phoneController.text.isNotEmpty ? _phoneController.text : '',
       };
 
       final success = await userProvider.updateProfile(userData);
       
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
-        );
-        Navigator.pop(context);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile updated successfully')),
+          );
+          Navigator.pop(context);
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to update profile')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(userProvider.error ?? 'Failed to update profile'),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
       }
     }
   }

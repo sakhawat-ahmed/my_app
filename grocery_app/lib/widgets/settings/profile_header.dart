@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/providers/user_provider.dart';
+import 'package:grocery_app/models/user_model.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
@@ -61,7 +62,7 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildUserInfo(BuildContext context, Map<String, dynamic> user) {
+  Widget _buildUserInfo(BuildContext context, User user) {
     return Row(
       children: [
         Container(
@@ -71,11 +72,20 @@ class ProfileHeader extends StatelessWidget {
             color: Colors.green[50],
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            Icons.person,
-            size: 30,
-            color: Colors.green[600],
-          ),
+          child: user.profileImage != null
+              ? ClipOval(
+                  child: Image.network(
+                    user.profileImage!,
+                    fit: BoxFit.cover,
+                    width: 60,
+                    height: 60,
+                  ),
+                )
+              : Icon(
+                  Icons.person,
+                  size: 30,
+                  color: Colors.green[600],
+                ),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -83,7 +93,7 @@ class ProfileHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user['username'] ?? 'User',
+                user.name,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -92,7 +102,7 @@ class ProfileHeader extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                user['email'] ?? 'No email',
+                user.email,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   fontSize: 14,
@@ -102,18 +112,28 @@ class ProfileHeader extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green[50],
+                  color: _getUserTypeColor(user.userType),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  user['user_type'] == 'premium' ? 'Premium Member' : 'Standard Member',
+                  _getUserTypeLabel(user.userType),
                   style: TextStyle(
-                    color: Colors.green[600],
+                    color: Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
+              if (user.phone != null && user.phone!.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  user.phone!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -173,9 +193,36 @@ class ProfileHeader extends StatelessWidget {
           ),
           onPressed: () {
             // Navigate to login screen
+            Navigator.pushNamed(context, '/login');
           },
         ),
       ],
     );
+  }
+
+  Color _getUserTypeColor(String? userType) {
+    switch (userType) {
+      case 'vendor':
+        return Colors.orange[400]!;
+      case 'delivery':
+        return Colors.blue[400]!;
+      case 'admin':
+        return Colors.red[400]!;
+      default: // customer
+        return Colors.green[400]!;
+    }
+  }
+
+  String _getUserTypeLabel(String? userType) {
+    switch (userType) {
+      case 'vendor':
+        return 'Vendor';
+      case 'delivery':
+        return 'Delivery Partner';
+      case 'admin':
+        return 'Admin';
+      default: // customer
+        return 'Customer';
+    }
   }
 }
