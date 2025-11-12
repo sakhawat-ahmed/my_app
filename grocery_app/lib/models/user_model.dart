@@ -1,51 +1,69 @@
 class User {
   final String id;
-  final String name;
+  final String username;
   final String email;
-  final String phone;
-  final String password;
-  final DateTime createdAt;
-  final String? profileImage;
-  final String? userType;
+  final String? firstName;
+  final String? lastName;
+  final String? phone;
+  final String userType;
+  final String? profilePicture;
+  final DateTime? dateOfBirth;
+  final int loyaltyPoints;
+  final String? storeName;
+  final String? storeDescription;
+  final DateTime dateJoined;
 
   User({
     required this.id,
-    required this.name,
+    required this.username,
     required this.email,
-    required this.phone,
-    required this.password,
-    required this.createdAt,
-    this.profileImage,
-    this.userType,
+    this.firstName,
+    this.lastName,
+    this.phone,
+    required this.userType,
+    this.profilePicture,
+    this.dateOfBirth,
+    this.loyaltyPoints = 0,
+    this.storeName,
+    this.storeDescription,
+    required this.dateJoined,
   });
+
+  String get name => username;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id']?.toString() ?? '',
-      name: json['name'] ?? json['username'] ?? '',
+      id: json['id'].toString(),
+      username: json['username'] ?? '',
       email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
-      password: json['password'] ?? '', // Note: password won't be returned from backend after registration
-      profileImage: json['profile_image'] ?? json['profilePicture'],
-      userType: json['user_type'] ?? json['userType'] ?? 'customer',
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at'])
-          : (json['date_joined'] != null 
-              ? DateTime.parse(json['date_joined'])
-              : DateTime.now()),
+      firstName: json['first_name'],
+      lastName: json['last_name'],
+      phone: json['phone'],
+      userType: json['user_type'] ?? 'customer',
+      profilePicture: json['profile_picture'],
+      dateOfBirth: json['date_of_birth'] != null ? DateTime.parse(json['date_of_birth']) : null,
+      loyaltyPoints: json['loyalty_points'] ?? 0,
+      storeName: json['store_name'],
+      storeDescription: json['store_description'],
+      dateJoined: DateTime.parse(json['date_joined'] ?? DateTime.now().toIso8601String()),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
+      'username': username,
       'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
       'phone': phone,
-      'password': password,
-      'profile_image': profileImage,
       'user_type': userType,
-      'created_at': createdAt.toIso8601String(),
+      'profile_picture': profilePicture,
+      'date_of_birth': dateOfBirth?.toIso8601String(),
+      'loyalty_points': loyaltyPoints,
+      'store_name': storeName,
+      'store_description': storeDescription,
+      'date_joined': dateJoined.toIso8601String(),
     };
   }
 
@@ -54,29 +72,39 @@ class User {
 
   User copyWith({
     String? id,
-    String? name,
+    String? username,
     String? email,
+    String? firstName,
+    String? lastName,
     String? phone,
-    String? password,
-    String? profileImage,
     String? userType,
-    DateTime? createdAt,
+    String? profilePicture,
+    DateTime? dateOfBirth,
+    int? loyaltyPoints,
+    String? storeName,
+    String? storeDescription,
+    DateTime? dateJoined,
   }) {
     return User(
       id: id ?? this.id,
-      name: name ?? this.name,
+      username: username ?? this.username,
       email: email ?? this.email,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
       phone: phone ?? this.phone,
-      password: password ?? this.password,
-      profileImage: profileImage ?? this.profileImage,
       userType: userType ?? this.userType,
-      createdAt: createdAt ?? this.createdAt,
+      profilePicture: profilePicture ?? this.profilePicture,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
+      storeName: storeName ?? this.storeName,
+      storeDescription: storeDescription ?? this.storeDescription,
+      dateJoined: dateJoined ?? this.dateJoined,
     );
   }
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, email: $email, phone: $phone)';
+    return 'User(id: $id, username: $username, email: $email)';
   }
 
   @override
