@@ -72,13 +72,20 @@ class ProfileHeader extends StatelessWidget {
             color: Colors.green[50],
             shape: BoxShape.circle,
           ),
-          child: user.profileImage != null
+          child: user.profilePicture != null
               ? ClipOval(
                   child: Image.network(
-                    user.profileImage!,
+                    user.profilePicture!,
                     fit: BoxFit.cover,
                     width: 60,
                     height: 60,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.person,
+                        size: 30,
+                        color: Colors.green[600],
+                      );
+                    },
                   ),
                 )
               : Icon(
@@ -93,7 +100,7 @@ class ProfileHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user.name,
+                user.username,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,

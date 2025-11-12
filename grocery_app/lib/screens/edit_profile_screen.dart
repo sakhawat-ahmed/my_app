@@ -28,9 +28,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final user = userProvider.user;
     
     if (user != null) {
-      _nameController.text = user.name;
+      _nameController.text = user.username;
       _emailController.text = user.email;
-      _phoneController.text = user.phone;
+      _phoneController.text = user.phone ?? '';
     }
   }
 
@@ -60,10 +60,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.green[100],
-                      backgroundImage: user?.profileImage != null
-                          ? NetworkImage(user!.profileImage!)
+                      backgroundImage: user?.profilePicture != null
+                          ? NetworkImage(user!.profilePicture!)
                           : null,
-                      child: user?.profileImage == null
+                      child: user?.profilePicture == null
                           ? Icon(
                               Icons.person,
                               size: 40,

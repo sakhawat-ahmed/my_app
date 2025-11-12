@@ -61,10 +61,10 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<bool> register({
-    required String name,
+    required String username,
     required String email,
     required String password,
-    required String phone,
+    String? phone,
     String userType = 'customer',
   }) async {
     _isLoading = true;
@@ -73,7 +73,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       final result = await AuthService.register(
-        name: name,
+        username: username,
         email: email,
         password: password,
         phone: phone,
@@ -171,7 +171,6 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  // Clear any error
   void clearError() {
     _error = null;
     notifyListeners();
