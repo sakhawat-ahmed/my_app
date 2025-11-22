@@ -3,14 +3,68 @@ import 'package:http/http.dart' as http;
 
 class TranslationService {
   static const String _baseUrl = 'https://api-inference.huggingface.co/models/facebook/nllb-200-3.3B';
-  
+  static bool _isModelLoaded = false;
+  static bool _isLoading = false;
+
+  /// Preload the model to avoid timeouts on first translation
+  static Future<void> preloadModel() async {
+    if (_isModelLoaded || _isLoading) return;
+    
+    _isLoading = true;
+    
+    try {
+      final response = await http.post(
+        Uri.parse(_baseUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'inputs': 'hello',
+          'parameters': {
+            'src_lang': 'eng_Latn',
+            'tgt_lang': 'spa_Latn'
+          }
+        }),
+      ).timeout(const Duration(seconds: 90));
+
+      if (response.statusCode == 200 || response.statusCode == 503) {
+        _isModelLoaded = true;
+        await Future.delayed(const Duration(seconds: 10));
+      }
+    } catch (e) {
+      // Preload failed, but continue anyway
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+  /// Check if model is ready and load if needed
+  static Future<bool> ensureModelReady() async {
+    if (_isModelLoaded) return true;
+    
+    try {
+      final response = await http.get(
+        Uri.parse(_baseUrl),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        _isModelLoaded = true;
+        return true;
+      }
+    } catch (e) {
+      // Check failed
+    }
+    
+    await preloadModel();
+    return _isModelLoaded;
+  }
+
+  /// Main translation function
   static Future<String?> translateText({
     required String text,
     required String sourceLang,
     required String targetLang,
   }) async {
     try {
-      print('Translating: "$text" from $sourceLang to $targetLang');
+      await ensureModelReady();
       
       final response = await http.post(
         Uri.parse(_baseUrl),
@@ -24,10 +78,7 @@ class TranslationService {
             'tgt_lang': targetLang,
           }
         }),
-      );
-
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -35,52 +86,51 @@ class TranslationService {
           return data[0]['translation_text'];
         }
       } else if (response.statusCode == 503) {
-        // Model is loading
-        print('Model loading, waiting 20 seconds...');
-        await Future.delayed(const Duration(seconds: 20));
-        return await translateText(
-          text: text,
-          sourceLang: sourceLang,
-          targetLang: targetLang,
-        );
-      } else {
-        // Try with a smaller model
-        print('Trying with smaller model...');
-        return await _fallbackTranslation(text, sourceLang, targetLang);
+        await Future.delayed(const Duration(seconds: 15));
+        return await _retryTranslation(text, sourceLang, targetLang);
       }
     } catch (e) {
-      print('Translation error: $e');
-      return 'Error: $e';
+      return await _retryTranslation(text, sourceLang, targetLang);
     }
     
     return null;
   }
 
-  static Future<String?> _fallbackTranslation(
-    String text, String sourceLang, String targetLang
+  /// Retry translation with longer timeout
+  static Future<String?> _retryTranslation(
+    String text, String sourceLang, String targetLang,
   ) async {
-    // Try with a smaller, faster model
     try {
       final response = await http.post(
-        Uri.parse('https://api-inference.huggingface.co/models/facebook/nllb-200-distilled-600M'),
+        Uri.parse(_baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'inputs': text,
-          'parameters': {'src_lang': sourceLang, 'tgt_lang': targetLang}
+          'parameters': {
+            'src_lang': sourceLang,
+            'tgt_lang': targetLang,
+          }
         }),
-      );
+      ).timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         if (data.isNotEmpty && data[0]['translation_text'] != null) {
+          _isModelLoaded = true;
           return data[0]['translation_text'];
         }
       }
     } catch (e) {
-      print('Fallback translation error: $e');
+      // Retry failed
     }
     
-    return 'Translation service unavailable. Please try again.';
+    return 'Translation failed';
+  }
+
+  /// Get model status for UI
+  static String getModelStatus() {
+    if (_isLoading) return 'Loading';
+    return _isModelLoaded ? 'Loaded' : 'Failed';
   }
 }
 
