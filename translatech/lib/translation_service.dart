@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TranslationService {
   static const String _baseUrl = 'https://api-inference.huggingface.co/models/facebook/nllb-200-3.3B';
@@ -10,17 +9,12 @@ class TranslationService {
     required String sourceLang,
     required String targetLang,
   }) async {
-    final String? apiKey = dotenv.env['HUGGING_FACE_API_KEY'];
-    
-    if (apiKey == null) {
-      throw Exception('Hugging Face API key not found');
-    }
-
     try {
+      print('Translating: "$text" from $sourceLang to $targetLang');
+      
       final response = await http.post(
         Uri.parse(_baseUrl),
         headers: {
-          'Authorization': 'Bearer $apiKey',
           'Content-Type': 'application/json',
         },
         body: json.encode({
@@ -32,27 +26,61 @@ class TranslationService {
         }),
       );
 
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         if (data.isNotEmpty && data[0]['translation_text'] != null) {
           return data[0]['translation_text'];
         }
       } else if (response.statusCode == 503) {
-        // Model is loading, wait and retry
-        await Future.delayed(const Duration(seconds: 10));
-        return translateText(
+        // Model is loading
+        print('Model loading, waiting 20 seconds...');
+        await Future.delayed(const Duration(seconds: 20));
+        return await translateText(
           text: text,
           sourceLang: sourceLang,
           targetLang: targetLang,
         );
       } else {
-        throw Exception('Translation failed: ${response.statusCode}');
+        // Try with a smaller model
+        print('Trying with smaller model...');
+        return await _fallbackTranslation(text, sourceLang, targetLang);
       }
     } catch (e) {
-      throw Exception('Translation error: $e');
+      print('Translation error: $e');
+      return 'Error: $e';
     }
     
     return null;
+  }
+
+  static Future<String?> _fallbackTranslation(
+    String text, String sourceLang, String targetLang
+  ) async {
+    // Try with a smaller, faster model
+    try {
+      final response = await http.post(
+        Uri.parse('https://api-inference.huggingface.co/models/facebook/nllb-200-distilled-600M'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'inputs': text,
+          'parameters': {'src_lang': sourceLang, 'tgt_lang': targetLang}
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        if (data.isNotEmpty && data[0]['translation_text'] != null) {
+          return data[0]['translation_text'];
+        }
+      }
+    } catch (e) {
+      print('Fallback translation error: $e');
+    }
+    
+    return 'Translation service unavailable. Please try again.';
   }
 }
 

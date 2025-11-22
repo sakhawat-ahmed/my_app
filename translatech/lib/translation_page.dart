@@ -29,7 +29,7 @@ class _TranslationPageState extends State<TranslationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Language Selection Row
+            // Language Selection
             Row(
               children: [
                 Expanded(
@@ -43,6 +43,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 IconButton(
                   icon: const Icon(Icons.swap_horiz),
                   onPressed: _swapLanguages,
+                  tooltip: 'Swap languages',
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -56,34 +57,32 @@ class _TranslationPageState extends State<TranslationPage> {
             ),
             const SizedBox(height: 20),
             
-            // Input Text Field
-            Expanded(
-              flex: 2,
-              child: Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Input Text',
-                        style: Theme.of(context).textTheme.titleSmall,
+            // Input Section
+            Card(
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Original Text',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: _textController,
-                          maxLines: null,
-                          expands: true,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Enter text to translate...',
-                          ),
-                        ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _textController,
+                      maxLines: 5,
+                      minLines: 3,
+                      decoration: InputDecoration(
+                        hintText: 'Enter text to translate...',
+                        border: OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.all(12),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -93,64 +92,44 @@ class _TranslationPageState extends State<TranslationPage> {
             // Translate Button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              height: 50,
+              child: ElevatedButton.icon(
                 onPressed: _isTranslating ? null : _translateText,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isTranslating
+                icon: _isTranslating 
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Translate', style: TextStyle(fontSize: 16)),
+                    : const Icon(Icons.translate),
+                label: Text(_isTranslating ? 'Translating...' : 'Translate'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ),
             
             const SizedBox(height: 20),
             
-            // Output Text
+            // Output Section
             Expanded(
-              flex: 2,
               child: Card(
-                elevation: 2,
+                elevation: 3,
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Translation',
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Expanded(
-                        child: _isTranslating
-                            ? const Center(child: CircularProgressIndicator())
-                            : _errorMessage.isNotEmpty
-                                ? Text(
-                                    _errorMessage,
-                                    style: const TextStyle(color: Colors.red),
-                                  )
-                                : SingleChildScrollView(
-                                    child: Text(
-                                      _translatedText.isEmpty 
-                                          ? 'Translation will appear here...'
-                                          : _translatedText,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: _translatedText.isEmpty 
-                                            ? Colors.grey 
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                  ),
+                        child: _buildOutputContent(),
                       ),
                     ],
                   ),
@@ -172,9 +151,8 @@ class _TranslationPageState extends State<TranslationPage> {
       value: value,
       decoration: InputDecoration(
         labelText: hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        border: const OutlineInputBorder(),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       ),
       items: NLLBLanguages.languages.keys.map((String language) {
         return DropdownMenuItem<String>(
@@ -186,13 +164,79 @@ class _TranslationPageState extends State<TranslationPage> {
     );
   }
 
+  Widget _buildOutputContent() {
+    if (_isTranslating) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Translating... This may take a moment.'),
+            SizedBox(height: 8),
+            Text(
+              'First translation might take longer as the model loads',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_errorMessage.isNotEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage,
+              style: const TextStyle(color: Colors.red),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _translateText,
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_translatedText.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.translate, size: 48, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'Translation will appear here',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Text(
+        _translatedText,
+        style: const TextStyle(fontSize: 16),
+      ),
+    );
+  }
+
   void _swapLanguages() {
     setState(() {
       final temp = _sourceLanguage;
       _sourceLanguage = _targetLanguage;
       _targetLanguage = temp;
       
-      // Also swap the text
+      // Swap text content
       final tempText = _textController.text;
       _textController.text = _translatedText;
       _translatedText = tempText;
@@ -200,7 +244,8 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Future<void> _translateText() async {
-    if (_textController.text.trim().isEmpty) {
+    final text = _textController.text.trim();
+    if (text.isEmpty) {
       setState(() {
         _errorMessage = 'Please enter some text to translate';
       });
@@ -215,17 +260,17 @@ class _TranslationPageState extends State<TranslationPage> {
 
     try {
       final translated = await TranslationService.translateText(
-        text: _textController.text,
+        text: text,
         sourceLang: NLLBLanguages.languages[_sourceLanguage]!,
         targetLang: NLLBLanguages.languages[_targetLanguage]!,
       );
 
       setState(() {
-        _translatedText = translated ?? 'Translation failed';
+        _translatedText = translated ?? 'No translation received';
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Error: $e';
+        _errorMessage = 'Translation failed: $e\n\nPlease check your internet connection and try again.';
       });
     } finally {
       setState(() {
