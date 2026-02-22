@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-part 'category_model.g.dart';
+// Remove this line: part 'category_model.g.dart';
 
 @HiveType(typeId: 1)
 enum TransactionType {
@@ -18,75 +18,108 @@ class Category {
   @HiveField(1)
   final String name;
   @HiveField(2)
-  final IconData icon;
+  final String iconData;
   @HiveField(3)
-  final Color color;
+  final int colorValue;
   @HiveField(4)
   final TransactionType type;
 
   Category({
     required this.id,
     required this.name,
-    required this.icon,
-    required this.color,
+    required this.iconData,
+    required this.colorValue,
     required this.type,
   });
+
+  IconData get icon {
+    switch (iconData) {
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'directions_car':
+        return Icons.directions_car;
+      case 'shopping_bag':
+        return Icons.shopping_bag;
+      case 'receipt':
+        return Icons.receipt;
+      case 'movie':
+        return Icons.movie;
+      case 'favorite':
+        return Icons.favorite;
+      case 'school':
+        return Icons.school;
+      case 'more_horiz':
+        return Icons.more_horiz;
+      case 'work':
+        return Icons.work;
+      case 'laptop':
+        return Icons.laptop;
+      case 'trending_up':
+        return Icons.trending_up;
+      case 'card_giftcard':
+        return Icons.card_giftcard;
+      default:
+        return Icons.attach_money;
+    }
+  }
+
+  Color get color => Color(colorValue);
 
   static List<Category> get expenseCategories => [
         Category(
           id: '1',
           name: 'Food',
-          icon: Icons.restaurant,
-          color: Colors.orange,
+          iconData: 'restaurant',
+          colorValue: 0xFFFF9800,
           type: TransactionType.expense,
         ),
         Category(
           id: '2',
           name: 'Transport',
-          icon: Icons.directions_car,
-          color: Colors.blue,
+          iconData: 'directions_car',
+          colorValue: 0xFF2196F3,
           type: TransactionType.expense,
         ),
         Category(
           id: '3',
           name: 'Shopping',
-          icon: Icons.shopping_bag,
-          color: Colors.purple,
+          iconData: 'shopping_bag',
+          colorValue: 0xFF9C27B0,
           type: TransactionType.expense,
         ),
         Category(
           id: '4',
           name: 'Bills',
-          icon: Icons.receipt,
-          color: Colors.red,
+          iconData: 'receipt',
+          colorValue: 0xFFF44336,
           type: TransactionType.expense,
         ),
         Category(
           id: '5',
           name: 'Entertainment',
-          icon: Icons.movie,
-          color: Colors.pink,
+          iconData: 'movie',
+          colorValue: 0xFFE91E63,
           type: TransactionType.expense,
         ),
         Category(
           id: '6',
           name: 'Health',
-          icon: Icons.favorite,
-          color: Colors.green,
+          iconData: 'favorite',
+          colorValue: 0xFF4CAF50,
           type: TransactionType.expense,
         ),
         Category(
           id: '7',
           name: 'Education',
-          icon: Icons.school,
-          color: Colors.teal,
+          iconData: 'school',
+          colorValue: 0xFF009688,
           type: TransactionType.expense,
         ),
         Category(
           id: '8',
           name: 'Other',
-          icon: Icons.more_horiz,
-          color: Colors.grey,
+          iconData: 'more_horiz',
+          colorValue: 0xFF9E9E9E,
           type: TransactionType.expense,
         ),
       ];
@@ -95,36 +128,36 @@ class Category {
         Category(
           id: '9',
           name: 'Salary',
-          icon: Icons.work,
-          color: Colors.green,
+          iconData: 'work',
+          colorValue: 0xFF4CAF50,
           type: TransactionType.income,
         ),
         Category(
           id: '10',
           name: 'Freelance',
-          icon: Icons.laptop,
-          color: Colors.blue,
+          iconData: 'laptop',
+          colorValue: 0xFF2196F3,
           type: TransactionType.income,
         ),
         Category(
           id: '11',
           name: 'Investment',
-          icon: Icons.trending_up,
-          color: Colors.purple,
+          iconData: 'trending_up',
+          colorValue: 0xFF9C27B0,
           type: TransactionType.income,
         ),
         Category(
           id: '12',
           name: 'Gift',
-          icon: Icons.card_giftcard,
-          color: Colors.pink,
+          iconData: 'card_giftcard',
+          colorValue: 0xFFE91E63,
           type: TransactionType.income,
         ),
         Category(
           id: '13',
           name: 'Other',
-          icon: Icons.more_horiz,
-          color: Colors.grey,
+          iconData: 'more_horiz',
+          colorValue: 0xFF9E9E9E,
           type: TransactionType.income,
         ),
       ];
