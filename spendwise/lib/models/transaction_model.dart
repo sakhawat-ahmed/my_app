@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'category_model.dart';
 
-part 'transaction_model.g.dart';
+// Remove this line: part 'transaction_model.g.dart';
 
 @HiveType(typeId: 0)
 class Transaction {
@@ -35,9 +36,11 @@ class Transaction {
   });
 
   String get formattedDate => DateFormat('MMM dd, yyyy').format(date);
+  
   String get formattedAmount {
     final formatter = NumberFormat('#,##0.00', 'en_US');
-    return '${type == TransactionType.income ? '+' : '-'}\$${formatter.format(amount)}';
+    final sign = type == TransactionType.income ? '+' : '-';
+    return '$sign\$${formatter.format(amount)}';
   }
 
   Category get category => Category.getCategoryById(categoryId);

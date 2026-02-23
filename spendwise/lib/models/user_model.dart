@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'user_model.g.dart';
+// Remove this line: part 'user_model.g.dart';
 
 @HiveType(typeId: 3)
 class AppUser {
@@ -48,4 +48,4 @@ class AppUser {
       currency: currency ?? this.currency,
     );
   }
-}
+} 
