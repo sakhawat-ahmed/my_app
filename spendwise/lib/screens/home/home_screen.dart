@@ -9,7 +9,7 @@ import '../../widgets/transaction_card.dart';
 import '../../models/category_model.dart';
 import '../transactions/add_transaction_screen.dart';
 import '../transactions/transaction_history_screen.dart';
-import '../stats/statistics_screen.dart';
+import 'package:expense_tracker/stats/statistics_screen.dart';
 import '../profile/profile_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {

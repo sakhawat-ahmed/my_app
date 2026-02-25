@@ -6,6 +6,7 @@ import '../../providers/theme_provider.dart';
 import '../../providers/transaction_provider.dart';
 import '../../services/hive_service.dart';
 import '../../services/export_service.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
