@@ -135,6 +135,42 @@ class TransactionState {
   }
 
   bool get isOverBudget => monthlyBudget > 0 && currentMonthExpense > monthlyBudget;
+
+  Map<String, double> getCategoryExpenses() {
+    final expenseTransactions = transactions
+        .where((t) => t.type == TransactionType.expense);
+    
+    final Map<String, double> categoryExpenses = {};
+    
+    for (var transaction in expenseTransactions) {
+      final categoryId = transaction.categoryId;
+      categoryExpenses[categoryId] = 
+          (categoryExpenses[categoryId] ?? 0) + transaction.amount;
+    }
+    
+    return categoryExpenses;
+  }
+
+  Map<String, double> getMonthlySummary() {
+    final Map<String, double> monthlyData = {};
+    final now = DateTime.now();
+    
+    for (int i = 6; i >= 0; i--) {
+      final month = DateTime(now.year, now.month - i, 1);
+      final monthKey = DateFormat('MMM yyyy').format(month);
+      
+      final monthExpense = transactions
+          .where((t) =>
+              t.type == TransactionType.expense &&
+              t.date.month == month.month &&
+              t.date.year == month.year)
+          .fold(0.0, (sum, t) => sum + t.amount);
+      
+      monthlyData[monthKey] = monthExpense;
+    }
+    
+    return monthlyData;
+  }
 }
 
 class TransactionNotifier extends StateNotifier<TransactionState> {
@@ -186,41 +222,5 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
-  }
-
-  Map<String, double> getCategoryExpenses() {
-    final expenseTransactions = state.transactions
-        .where((t) => t.type == TransactionType.expense);
-    
-    final Map<String, double> categoryExpenses = {};
-    
-    for (var transaction in expenseTransactions) {
-      final categoryId = transaction.categoryId;
-      categoryExpenses[categoryId] = 
-          (categoryExpenses[categoryId] ?? 0) + transaction.amount;
-    }
-    
-    return categoryExpenses;
-  }
-
-  Map<String, double> getMonthlySummary() {
-    final Map<String, double> monthlyData = {};
-    final now = DateTime.now();
-    
-    for (int i = 6; i >= 0; i--) {
-      final month = DateTime(now.year, now.month - i, 1);
-      final monthKey = DateFormat('MMM yyyy').format(month);
-      
-      final monthExpense = state.transactions
-          .where((t) =>
-              t.type == TransactionType.expense &&
-              t.date.month == month.month &&
-              t.date.year == month.year)
-          .fold(0.0, (sum, t) => sum + t.amount);
-      
-      monthlyData[monthKey] = monthExpense;
-    }
-    
-    return monthlyData;
   }
 }
