@@ -35,17 +35,12 @@ class AppTheme {
       inversePrimary: Color(0xFFD0BCFF),
     ),
     textTheme: GoogleFonts.poppinsTextTheme(),
-    cardTheme: CardTheme(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      clipBehavior: Clip.antiAlias,
-    ),
+    // Removed cardTheme entirely
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
       scrolledUnderElevation: 0,
+      backgroundColor: Colors.transparent,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       elevation: 0,
@@ -93,17 +88,12 @@ class AppTheme {
       inversePrimary: Color(0xFF6750A4),
     ),
     textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-    cardTheme: CardTheme(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      clipBehavior: Clip.antiAlias,
-    ),
+    // Removed cardTheme entirely
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
       scrolledUnderElevation: 0,
+      backgroundColor: Colors.transparent,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       elevation: 0,
