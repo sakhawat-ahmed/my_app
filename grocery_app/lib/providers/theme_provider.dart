@@ -88,14 +88,13 @@ class ThemeProvider with ChangeNotifier {
       labelStyle: const TextStyle(color: Colors.white70),
       hintStyle: const TextStyle(color: Colors.white54),
     ),
-    dialogBackgroundColor: const Color(0xFF1E1E1E),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Color(0xFF1E1E1E),
       selectedItemColor: Colors.green,
       unselectedItemColor: Colors.grey,
     ),
     splashColor: Colors.green[800],
-    highlightColor: Colors.green[900],
+    highlightColor: Colors.green[900], dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF1E1E1E)),
   );
 
   setThemeWithoutPrefs(bool isDarkMode) {}

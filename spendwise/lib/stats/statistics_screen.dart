@@ -50,7 +50,7 @@ class StatisticsScreen extends ConsumerWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -129,7 +129,7 @@ class StatisticsScreen extends ConsumerWidget {
                               style: GoogleFonts.poppins(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -155,7 +155,7 @@ class StatisticsScreen extends ConsumerWidget {
                                           GoogleFonts.poppins(
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .onBackground,
+                                                .onSurface,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         );
@@ -271,7 +271,7 @@ class StatisticsScreen extends ConsumerWidget {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   color:
-                                      Theme.of(context).colorScheme.onBackground,
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -374,7 +374,7 @@ class StatisticsScreen extends ConsumerWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -397,7 +397,7 @@ class StatisticsScreen extends ConsumerWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 Text(

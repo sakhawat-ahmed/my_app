@@ -69,7 +69,7 @@ class SearchBarWidget extends StatelessWidget {
           const SizedBox(width: 8),
           TextButton(
             onPressed: onClose,
-            child: Text(
+            child: const Text(
               'Cancel',
               style: TextStyle(
                 color: Colors.green,

@@ -30,7 +30,7 @@ class LoginButton extends StatelessWidget {
             ? SizedBox(
                 height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 22, desktop: 24),
                 width: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 22, desktop: 24),
-                child: CircularProgressIndicator(
+                child: const CircularProgressIndicator(
                   color: Colors.white,
                   strokeWidth: 2,
                 ),

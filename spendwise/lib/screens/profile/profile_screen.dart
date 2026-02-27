@@ -133,7 +133,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       style: GoogleFonts.poppins(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -174,7 +174,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -219,7 +219,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                     color:
-                                        Theme.of(context).colorScheme.onBackground,
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                                 IconButton(
@@ -292,7 +292,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       fontWeight: FontWeight.bold,
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .onBackground,
+                                          .onSurface,
                                     ),
                                   ),
                                 ],
@@ -334,7 +334,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 value: transactionState.currentMonthExpense /
                                     transactionState.monthlyBudget,
                                 backgroundColor:
-                                    Theme.of(context).colorScheme.surfaceVariant,
+                                    Theme.of(context).colorScheme.surfaceContainerHighest,
                                 color: transactionState.isOverBudget
                                     ? Colors.red
                                     : Theme.of(context).colorScheme.primary,
@@ -362,7 +362,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                                 color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                    Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -506,7 +506,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   if (subtitle != null) ...[

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:timer_app/providers/app_provider.dart';
 import 'package:timer_app/widgets/stopwatch_display.dart';
 import 'package:timer_app/widgets/lap_list.dart';
 

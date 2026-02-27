@@ -143,7 +143,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Row(
@@ -366,7 +366,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],

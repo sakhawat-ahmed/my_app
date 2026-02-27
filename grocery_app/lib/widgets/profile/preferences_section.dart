@@ -99,7 +99,7 @@ class PreferencesSection extends StatelessWidget {
         ),
         value: value,
         onChanged: onChanged,
-        activeColor: Colors.green,
+        activeThumbColor: Colors.green,
       ),
     );
   }

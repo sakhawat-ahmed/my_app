@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:grocery_app/models/setting_item.dart';
 
 class SettingsData {

@@ -171,7 +171,7 @@ class _TranslationPageState extends State<TranslationPage> {
     required String hint,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: hint,
         border: const OutlineInputBorder(),

@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onRefresh: _refreshData,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.8,
             child: Center(
               child: Column(

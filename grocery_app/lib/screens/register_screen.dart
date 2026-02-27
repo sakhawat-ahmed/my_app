@@ -140,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               // Header
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
-              RegisterHeader(),
+              const RegisterHeader(),
               SizedBox(height: ResponsiveUtils.responsiveSize(context, mobile: 20, tablet: 30, desktop: 40)),
 
               // Registration Form

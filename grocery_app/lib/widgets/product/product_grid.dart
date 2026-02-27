@@ -30,7 +30,7 @@ class ProductGrid extends StatelessWidget {
               size: 64,
               color: Colors.grey[400],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'No products found',
               style: TextStyle(
@@ -38,7 +38,7 @@ class ProductGrid extends StatelessWidget {
                 color: Colors.grey[600],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               category == 'All' 
                 ? 'Check back later for new products'

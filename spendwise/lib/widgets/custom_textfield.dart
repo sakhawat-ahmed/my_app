@@ -39,7 +39,7 @@ class CustomTextField extends StatelessWidget {
       enabled: enabled,
       style: GoogleFonts.poppins(
         fontSize: 14,
-        color: Theme.of(context).colorScheme.onBackground,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
       decoration: InputDecoration(
         labelText: label,

@@ -88,7 +88,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     child: Icon(
                       Icons.arrow_back,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -98,7 +98,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),

@@ -43,7 +43,7 @@ class FavoritesScreen extends StatelessWidget {
             size: 80,
             color: themeProvider.secondaryTextColor,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             'No Favorites Yet',
             style: TextStyle(
@@ -52,7 +52,7 @@ class FavoritesScreen extends StatelessWidget {
               color: themeProvider.textColor,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             'Start adding products to your favorites!',
             style: TextStyle(
@@ -61,7 +61,7 @@ class FavoritesScreen extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           ElevatedButton(
             onPressed: () {
               // Navigate back to home
@@ -114,7 +114,7 @@ class FavoritesScreen extends StatelessWidget {
                   onPressed: () {
                     _showClearAllDialog(context, favoritesProvider);
                   },
-                  child: Text(
+                  child: const Text(
                     'Clear All',
                     style: TextStyle(
                       fontSize: 14,
@@ -153,14 +153,14 @@ class FavoritesScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Clear All Favorites?',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text(
+          content: const Text(
             'Are you sure you want to remove all items from your favorites?',
             style: TextStyle(
               fontSize: 16,
@@ -171,7 +171,7 @@ class FavoritesScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(
                   fontSize: 16,
@@ -191,7 +191,7 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: Text(
+              child: const Text(
                 'Clear All',
                 style: TextStyle(
                   fontSize: 16,

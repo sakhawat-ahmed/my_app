@@ -1,12 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io' show Platform;
 import 'config/app_theme.dart';
 import 'providers/theme_provider.dart';
 import 'providers/auth_provider.dart';
-import 'providers/firebase_provider.dart';
 import 'services/hive_service.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';

@@ -361,7 +361,7 @@ class HomeDrawer extends StatelessWidget {
     final username = user!['username'] ?? '';
     
     if (firstName.isNotEmpty || lastName.isNotEmpty) {
-      return '${firstName} ${lastName}'.trim();
+      return '$firstName $lastName'.trim();
     } else if (username.isNotEmpty) {
       return username;
     }

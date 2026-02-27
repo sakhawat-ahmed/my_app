@@ -58,38 +58,38 @@ enum StoreInfoType {
 
 class HelpSupportData {
   static final List<FAQItem> faqItems = [
-    FAQItem(
+    const FAQItem(
       question: 'How do I place an order?',
       answer: 'Browse products, add to cart, and proceed to checkout. You can choose delivery or pickup options.',
     ),
-    FAQItem(
+    const FAQItem(
       question: 'What payment methods are accepted?',
       answer: 'We accept credit/debit cards, digital wallets, and cash on delivery.',
     ),
-    FAQItem(
+    const FAQItem(
       question: 'How can I track my order?',
       answer: 'Go to My Orders section to track your order in real-time.',
     ),
-    FAQItem(
+    const FAQItem(
       question: 'What is your return policy?',
       answer: 'We accept returns within 7 days for damaged or incorrect items.',
     ),
   ];
 
   static final List<ContactOption> contactOptions = [
-    ContactOption(
+    const ContactOption(
       title: 'Call Us',
       subtitle: '+1 (555) 123-4567',
       value: 'tel:+15551234567',
       type: ContactType.phone,
     ),
-    ContactOption(
+    const ContactOption(
       title: 'Email Us',
       subtitle: 'support@grocerystore.com',
       value: 'mailto:support@grocerystore.com',
       type: ContactType.email,
     ),
-    ContactOption(
+    const ContactOption(
       title: 'Live Chat',
       subtitle: 'Available 24/7',
       value: 'live_chat',
@@ -98,17 +98,17 @@ class HelpSupportData {
   ];
 
   static final List<StoreInfo> storeInfo = [
-    StoreInfo(
+    const StoreInfo(
       title: 'Opening Hours',
       value: 'Mon-Sun: 6:00 AM - 11:00 PM',
       type: StoreInfoType.openingHours,
     ),
-    StoreInfo(
+    const StoreInfo(
       title: 'Address',
       value: '123 Grocery Street, City, State 12345',
       type: StoreInfoType.address,
     ),
-    StoreInfo(
+    const StoreInfo(
       title: 'Delivery Radius',
       value: 'Up to 10 miles from store location',
       type: StoreInfoType.deliveryRadius,
@@ -116,27 +116,27 @@ class HelpSupportData {
   ];
 
   static final List<QuickGuide> quickGuides = [
-    QuickGuide(
+    const QuickGuide(
       title: 'How to use coupons',
       description: 'Learn how to apply discount coupons to your orders',
     ),
-    QuickGuide(
+    const QuickGuide(
       title: 'Delivery instructions',
       description: 'Set delivery preferences and instructions',
     ),
-    QuickGuide(
+    const QuickGuide(
       title: 'Account setup',
       description: 'Complete guide to setting up your account',
     ),
-    QuickGuide(
+    const QuickGuide(
       title: 'Payment troubleshooting',
       description: 'Solve common payment issues',
     ),
-    QuickGuide(
+    const QuickGuide(
       title: 'Order cancellation',
       description: 'How to cancel or modify your orders',
     ),
-    QuickGuide(
+    const QuickGuide(
       title: 'Refund process',
       description: 'Step-by-step refund procedure',
     ),

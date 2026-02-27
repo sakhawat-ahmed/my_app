@@ -139,7 +139,7 @@ class _HomeTab extends ConsumerWidget {
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                    Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -232,7 +232,7 @@ class _HomeTab extends ConsumerWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         TextButton(

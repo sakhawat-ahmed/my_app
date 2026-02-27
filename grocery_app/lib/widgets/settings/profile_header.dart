@@ -124,7 +124,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 child: Text(
                   _getUserTypeLabel(user.userType),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,

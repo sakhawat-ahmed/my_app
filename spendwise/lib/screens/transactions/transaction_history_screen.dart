@@ -20,7 +20,7 @@ class TransactionHistoryScreen extends ConsumerStatefulWidget {
 class _TransactionHistoryScreenState
     extends ConsumerState<TransactionHistoryScreen> {
   final _searchController = TextEditingController();
-  bool _showFilters = false;
+  final bool _showFilters = false;
 
   @override
   void dispose() {
@@ -312,7 +312,7 @@ class _TransactionHistoryScreenState
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               TextButton(
@@ -451,7 +451,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               IconButton(
@@ -466,7 +466,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -487,7 +487,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -554,7 +554,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -674,7 +674,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
               ? type == TransactionType.income
                   ? Colors.green.withOpacity(0.1)
                   : Colors.red.withOpacity(0.1)
-              : Theme.of(context).colorScheme.surfaceVariant,
+              : Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
             color: isSelected
@@ -732,7 +732,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: date != null
-                    ? Theme.of(context).colorScheme.onBackground
+                    ? Theme.of(context).colorScheme.onSurface
                     : Theme.of(context).colorScheme.outline,
               ),
             ),
