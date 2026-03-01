@@ -16,7 +16,6 @@ develop-eggs/
 dist/
 downloads/
 eggs/
-services/
 django_env/
 .eggs/
 lib64/
